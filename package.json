@@ -1,0 +1,49 @@
+{
+  "name": "rex-pierre-diffs",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "rex-pierre-diffs": "./src/cli.ts"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 4173",
+    "build": "vite build",
+    "start": "bun src/server.ts",
+    "test": "bun test",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@pierre/diffs": "^1.0.0",
+    "chokidar": "^4.0.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.4",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0"
+  },
+  "description": "A graphical Git diff reviewer for Rex Terminal, powered by Pierre Diffs.",
+  "license": "MIT",
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "files": [
+    "src",
+    "dist",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akadotsh/rex-pierre-diffs.git"
+  },
+  "homepage": "https://github.com/akadotsh/rex-pierre-diffs#readme",
+  "bugs": {
+    "url": "https://github.com/akadotsh/rex-pierre-diffs/issues"
+  }
+}
