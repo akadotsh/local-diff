@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "rex-pierre-diffs": "./dist-node/cli.js"
+    "rex-pierre-diffs": "./dist-node/cli.js",
+    "rpd": "./dist-node/cli.js"
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 4173",
@@ -35,6 +36,7 @@
     "dist-node",
     "dist",
     "README.md",
+    "rex-pierre-diffs.lua",
     "LICENSE",
     "THIRD_PARTY_NOTICES"
   ],
