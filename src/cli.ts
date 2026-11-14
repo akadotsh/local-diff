@@ -15,8 +15,8 @@ async function main() {
   }
 
   const cwd = options.cwd;
-  const session = options.session || process.env.REX_SESSION || undefined;
-  const block = options.block || process.env.REX_BLOCK || undefined;
+  let session = options.session || process.env.REX_SESSION || undefined;
+  let block = options.block;
   const repoResult = spawnSync('git', ['rev-parse', '--show-toplevel'], { cwd, encoding: 'utf8' });
   if (repoResult.error || repoResult.status !== 0) throw new Error(`Run inside a Git repository: ${repoResult.stderr?.trim() || repoResult.error?.message || 'git failed'}`);
   const root = repoResult.stdout.trim();
@@ -24,6 +24,15 @@ async function main() {
   for (const [binary, args] of [['rex', ['whoami', '--json']], ['terminal-browser', ['--version']]] as const) {
     const check = spawnSync(binary, args, { encoding: 'utf8' });
     if (check.error || check.status !== 0) throw new Error(`Required command ${binary} is unavailable: ${check.stderr?.trim() || check.error?.message || `exit ${check.status}`}`);
+    if (binary === 'rex') {
+      try {
+        const whoami = JSON.parse(check.stdout) as { session_id?: string; block_id?: string };
+        if (whoami.session_id && whoami.block_id) {
+          session = options.session || whoami.session_id;
+          block = options.block || whoami.block_id;
+        }
+      } catch {}
+    }
   }
 
   const logPath = join(tmpdir(), `rex-pierre-diffs-server-${process.pid}.log`);
