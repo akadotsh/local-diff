@@ -26,7 +26,15 @@ Run `rex-pierre-diffs` (or its short alias, `rpd`) from a Git repository in a Re
 - Rex Terminal and [`terminal-browser`](https://github.com/zenbu-labs/terminal-browser) for the integrated interface.
 - npm or pnpm to install dependencies and build from source.
 
-Clone the repository, install dependencies, build the frontend and CLI, then install the command globally. Choose npm or pnpm:
+After the package is published, install it globally with npm or pnpm:
+
+```sh
+npm install --global rex-pierre-diffs
+# or
+pnpm add --global rex-pierre-diffs
+```
+
+To build and install from source, clone the repository and choose npm or pnpm:
 
 ```sh
 git clone https://github.com/akadotsh/rex-pierre-diffs.git
