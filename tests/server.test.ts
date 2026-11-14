@@ -98,6 +98,18 @@ describe('Git integration', () => {
 });
 
 describe('HTTP API', () => {
+  test('reports the Rex session associated with a viewer server', async () => {
+    const previous = process.env.REX_SESSION;
+    process.env.REX_SESSION = 'session:viewer';
+    try {
+      const response = await createApp(root, 'test-token')(new Request('http://localhost/api/diff'));
+      assert.equal((await response.json() as { session: string }).session, 'session:viewer');
+    } finally {
+      if (previous === undefined) delete process.env.REX_SESSION;
+      else process.env.REX_SESSION = previous;
+    }
+  });
+
   test('serves diffs, validates review writes, persists reviews, and handles errors', async () => {
     const app = createApp(root, 'test-token', join(root, 'reviews.json'));
     const get = await app(new Request('http://localhost/api/diff'));

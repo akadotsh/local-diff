@@ -3,6 +3,16 @@ import test from 'node:test';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
+import { parseCliArgs } from '../src/shared/cliArgs.js';
+
+test('parses Rex cwd, session, and block arguments, including terminal file URLs', () => {
+  assert.deepEqual(parseCliArgs(['--cwd', '/work/project', '--session', 'session:one', '--block', 'block:two'], '/tmp'), {
+    help: false, cwd: '/work/project', session: 'session:one', block: 'block:two',
+  });
+  assert.equal(parseCliArgs(['--cwd', 'file://rex-host/Users/me/My%20Project'], '/tmp').cwd, '/Users/me/My Project');
+  assert.throws(() => parseCliArgs(['--cwd'], '/tmp'), /requires a value/);
+  assert.throws(() => parseCliArgs(['--unknown'], '/tmp'), /Unknown option/);
+});
 
 test('compiled production CLI runs with Node.js outside the repository', () => {
   const result = spawnSync(process.execPath, [resolve('dist-node/cli.js'), '--help'], { cwd: tmpdir(), encoding: 'utf8' });

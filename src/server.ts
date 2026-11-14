@@ -75,7 +75,7 @@ export function createApp(root: string, token: string, reviewsPath = reviewFile(
     const url = new URL(req.url);
     if (url.pathname === '/events') return new Response(new ReadableStream<Uint8Array>({ start(c) { clients.add(c); req.signal.addEventListener('abort', () => clients.delete(c), { once: true }); } }), { headers: { 'content-type': 'text/event-stream', 'cache-control': 'no-cache' } });
     if (url.pathname === '/api/diff' && req.method === 'GET') {
-      try { return Response.json(await getSnapshot(root, url.searchParams.get('mode') || 'all')); }
+      try { return Response.json({ ...await getSnapshot(root, url.searchParams.get('mode') || 'all'), session: process.env.REX_SESSION || null }); }
       catch (error) { return Response.json({ error: String(error) }, { status: 400 }); }
     }
     if (url.pathname === '/api/reviews' && req.method === 'GET') {
