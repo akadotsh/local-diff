@@ -4,6 +4,15 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 test('publishes both CLI command names', async () => {
-  const manifest = JSON.parse(await readFile(resolve('package.json'), 'utf8')) as { bin: Record<string, string> };
+  const manifest = JSON.parse(await readFile(resolve('package.json'), 'utf8')) as {
+    bin: Record<string, string>;
+    scripts: Record<string, string>;
+    files: string[];
+  };
   assert.deepEqual(manifest.bin, { 'rex-pierre-diffs': './dist-node/cli.js', rpd: './dist-node/cli.js' });
+  assert.equal(manifest.scripts.prepack, 'npm run build');
+  assert.equal(manifest.scripts.prepublishOnly, 'npm run check && npm test');
+  assert.ok(manifest.files.includes('dist-node'));
+  assert.ok(manifest.files.includes('dist'));
+  assert.ok(manifest.files.includes('rex-pierre-diffs.lua'));
 });

@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 4173",
     "build": "tsc -p tsconfig.node.json && node -e \"require('node:fs').chmodSync('dist-node/cli.js', 0o755)\" && vite build",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run check && npm test",
     "start": "node dist-node/server.js",
     "test": "tsc -p tsconfig.node.json && tsc -p tsconfig.test.json && node --test .test-dist/tests",
     "check": "tsc --noEmit && tsc -p tsconfig.node.json --noEmit"
