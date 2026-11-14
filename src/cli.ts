@@ -10,7 +10,7 @@ import { parseCliArgs } from './shared/cliArgs.js';
 async function main() {
   const options = parseCliArgs(process.argv.slice(2), process.cwd());
   if (options.help) {
-    console.log('rex-pierre-diffs — review local Git changes inside Rex\n\nUsage: rex-pierre-diffs [--cwd PATH] [--session ID] [--block ID]\n\nRun inside a Git repository in a Rex terminal. Requires Node.js, Git, Rex, and terminal-browser.');
+    console.log('rex-pierre-diffs — review local Git changes inside Rex\n\nUsage: rex-pierre-diffs [--split right|left|above|below] [--cwd PATH] [--session ID] [--block ID]\n\nRun inside a Git repository in a Rex terminal. Requires Node.js, Git, Rex, and terminal-browser.');
     return;
   }
 
@@ -76,7 +76,7 @@ async function main() {
     throw new Error(`rex-pierre-diffs server did not become ready on ports 4179–4199. Log: ${logPath}\n${output.slice(-4000)}`);
   }
 
-  const args = ['run', '--split=right', '--ratio', '50', '--label', 'rex-pierre-diffs', '--focus=false', '--keep-open', '-c', root];
+  const args = ['run', `--split=${options.split}`, '--ratio', '50', '--label', 'rex-pierre-diffs', '--focus=false', '--keep-open', '-c', root];
   if (session) args.push('--session', session);
   if (block) args.push('--block', block);
   const result = spawnSync('rex', [...args, '--', 'terminal-browser', 'open', `http://127.0.0.1:${info.port}`], { stdio: 'inherit' });

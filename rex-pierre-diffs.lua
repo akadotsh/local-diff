@@ -1,5 +1,6 @@
 -- Copy this file into your Rex config directory, then require it from init.lua.
 local shortcut = "shift+cmd+g"
+local split_direction = "right"
 
 rex.action{
   name = "open_pierre_diffs",
@@ -26,7 +27,7 @@ rex.action{
     end
 
     local result, run_error = rex.exec(
-      { "rpd", "--cwd", cwd, "--session", ctx.session_id, "--block", ctx.block_id },
+      { "rpd", "--cwd", cwd, "--session", ctx.session_id, "--block", ctx.block_id, "--split", split_direction },
       { cwd = cwd, timeout = 25 }
     )
     if not result then error(run_error or "Could not start rpd; check that rex-pierre-diffs is installed", 0) end

@@ -63,7 +63,11 @@ cd /path/to/your/repository
 rex-pierre-diffs
 ```
 
-The command detects the repository root (including when run from a subdirectory), starts a server bound to `127.0.0.1`, and opens the viewer in a right-side split. It checks ports 4179 through 4199 and reuses a responding viewer for the same repository.
+The command detects the repository root (including when run from a subdirectory), starts a server bound to `127.0.0.1`, and opens the viewer in a right-side split by default. Use `--split below` for a top/bottom layout; `right`, `left`, `above`, and `below` are supported. It checks ports 4179 through 4199 and reuses a responding viewer for the same repository.
+
+```sh
+rex-pierre-diffs --split below
+```
 
 Use `rex-pierre-diffs --help` to show CLI help. The optional `--cwd`, `--session`, and `--block` arguments are primarily for Rex action integrations. When launched from a Rex pane, the app lists panes in the current session as agent targets.
 
@@ -83,7 +87,7 @@ If the file already exists, inspect and merge it manually; `cp -n` will not over
 require("rex-pierre-diffs")
 ```
 
-The shortcut is configurable by editing `local shortcut = "shift+cmd+g"` in `rex-pierre-diffs.lua`. To avoid adding the default keybinding, remove the `rex.bind(...)` line; the action remains available in the Command Palette. Check and reload the configuration:
+The shortcut and split direction are configurable by editing `local shortcut = "shift+cmd+g"` and `local split_direction = "right"` in `rex-pierre-diffs.lua`; set the direction to `"below"` for a top/bottom layout. To avoid adding the default keybinding, remove the `rex.bind(...)` line; the action remains available in the Command Palette. Check and reload the configuration:
 
 ```sh
 rex config check
