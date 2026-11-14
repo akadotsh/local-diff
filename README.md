@@ -1,71 +1,75 @@
 # rex-pierre-diffs
 
-A graphical Git diff viewer and code-review interface for Rex Terminal, powered by [Pierre Diffs](https://diffs.com/docs). This is an independent community project and is not affiliated with or endorsed by Rex/Superlogical or Pierre.
+A graphical Git diff viewer and code-review interface that runs inside Rex Terminal, powered by [Pierre Diffs](https://diffs.com/docs).
+
+> [!NOTE]
+> This is an independent, community-maintained project and is not an official part of Rex.
+
+Run `rex-pierre-diffs` from a Git repository in a Rex pane to open the review interface in a terminal-browser split. The app reads local changes, watches for file updates, and keeps review notes on your machine.
 
 ## Features
 
-- Review staged, unstaged, combined, and untracked Git changes.
-- Render patches with Pierre Diffs, syntax highlighting, line selection, and live file watching.
-- Add local review notes, copy selected source, and prepare context for an agent.
-- Select a pane in the current Rex session and explicitly confirm inserting feedback. Text is sent with `rex send`; it is not submitted automatically.
-- Comfortable and Compact density settings; file sidebar can be collapsed.
+- Review staged changes, working-tree changes, or all changes relative to `HEAD`.
+- Include untracked text files and navigate changed files from the file list.
+- View syntax-highlighted unified diffs with selectable added and removed lines.
+- Add local review notes and copy selected source lines.
+- Prepare selected code and a question for a coding agent in another Rex pane. Choose the destination and confirm before insertion; the app does not submit the message.
+- Switch between Comfortable and Compact density, collapse the file sidebar, and use a narrow split layout.
+- Refresh the diff view as repository files change.
 
-## Requirements
+## Installation
 
-- Bun 1.0 or newer (the CLI and backend use Bun APIs).
+### Requirements
+
+- Node.js 20 or newer for the CLI and local server.
 - Git.
-- Rex Terminal and [`terminal-browser`](https://github.com/zenbu-labs/terminal-browser) for the integrated workflow.
+- Rex Terminal and [`terminal-browser`](https://github.com/zenbu-labs/terminal-browser) for the integrated interface.
+- npm or pnpm to install dependencies and build from source.
 
-The frontend build uses Node.js/npm commands. Runtime execution requires Bun; Node.js alone is not supported.
-
-## Install and use
-
-After publication, install the package globally:
+Clone the repository, install dependencies, build the frontend and CLI, then install the command globally. Choose npm or pnpm:
 
 ```sh
-npm install --global rex-pierre-diffs
-cd /path/to/your/git/repository
+git clone https://github.com/akadotsh/rex-pierre-diffs.git
+cd rex-pierre-diffs
+npm ci
+npm run build
+npm install --global .
+```
+
+```sh
+git clone https://github.com/akadotsh/rex-pierre-diffs.git
+cd rex-pierre-diffs
+pnpm install
+pnpm build
+pnpm add --global .
+```
+
+## Usage and configuration
+
+Open a Git repository in Rex Terminal, then run:
+
+```sh
+cd /path/to/your/repository
 rex-pierre-diffs
 ```
 
-Run the command from a Git repository in a Rex terminal. It starts a loopback-only server and opens terminal-browser in a right-side split while preserving focus. It tries ports 4179–4199 and reuses a responding rex-pierre-diffs server for the same repository.
+The command detects the repository root (including when run from a subdirectory), starts a server bound to `127.0.0.1`, and opens the viewer in a right-side split. It checks ports 4179 through 4199 and reuses a responding viewer for the same repository.
 
-```sh
-rex-pierre-diffs --help
-```
+Use `rex-pierre-diffs --help` to show CLI help. The CLI has no other flags or configuration file. When launched from a Rex pane, the app lists panes in the current session as agent targets.
 
-## Review and agent feedback
-
-Choose All changes, Working tree, or Staged. Select changed lines in the diff to show the source preview and actions. Add Comment saves a note in the repository's Git metadata directory. Ask Agent opens a message preview; choose a pane and confirm insertion. The message is placed in the selected pane without an Enter key. Use Copy to Clipboard when pane delivery is unavailable.
-
-## Troubleshooting
-
-- **Not a Git repository:** run the command inside a repository (a subdirectory is fine).
-- **Rex pane cannot open:** check that the `rex` command is available in the Rex shell.
-- **Browser does not open:** install and check `terminal-browser`.
-- **Port unavailable:** the CLI tries the next port through 4199; startup logs are written under `/tmp`.
-- **Agent targets unavailable:** the CLI must inherit `REX_SESSION`; verify the pane is in that session.
-- **Viewer appears blank:** rebuild the frontend for a source checkout with `npm run build`, then rerun the CLI.
-
-## Known limitations
-
-- Review comments are local notes, not inline line annotations, and do not yet support editing or deleting.
-- Agent-pane delivery and multiline insertion require confirmation in your installed Rex version; this project does not press Enter.
-- Agent integrations have not been verified against Claude Code, Codex, or OpenCode in this release preparation environment.
-- Large-diff performance and responsive appearance inside actual terminal-browser panes still need manual verification.
-- There is no standalone non-Rex browser launch command.
+In the viewer, choose **All changes**, **Working tree**, or **Staged**. Select lines in a diff to see their source and use **Add Comment**, **Copy selected code**, or **Ask Agent**. Review notes are stored in the repository's Git metadata directory. Display density and the last successfully used agent pane are remembered in the browser's local storage.
 
 ## Development
 
 ```sh
 npm ci
 npm run check
-npm test
 npm run build
+npm test
 ```
 
-To run the frontend during development, start the API separately with `bun src/server.ts` and Vite with `npm run dev`. The server binds only to `127.0.0.1`.
+The app uses React and TypeScript, Vite for the frontend build, Node.js for the CLI and server, and `@pierre/diffs` for rendering patches. The local server reads Git changes and watches the repository for file updates. The same scripts can be run with pnpm, for example `pnpm run check`, `pnpm build`, and `pnpm test`.
 
 ## License
 
-This project is MIT licensed. Third-party components retain their own licenses; see [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES/).
+This project is licensed under the MIT License; see [LICENSE](LICENSE). Third-party license texts and notices are in [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES/).
