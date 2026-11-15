@@ -54,6 +54,7 @@ describe('Git integration', () => {
     assert.equal(all.patch.split('diff --git a/mod.txt').length - 1, 1);
     assert.match(staged.patch, /after/);
     assert.match(working.patch, /after unstaged/);
+    if (!globalThis.navigator) Object.defineProperty(globalThis, 'navigator', { value: { userAgent: 'Node.js', platform: 'linux', maxTouchPoints: 0 }, configurable: true });
     const pierre = await import('@pierre/diffs');
     const parsed = pierre.parsePatchFiles(all.patch);
     assert.ok(parsed[0]?.files.length >= 4);

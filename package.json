@@ -1,6 +1,6 @@
 {
   "name": "rex-pierre-diffs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "bin": {
     "rex-pierre-diffs": "./dist-node/cli.js",
@@ -12,7 +12,7 @@
     "prepack": "npm run build",
     "prepublishOnly": "npm run check && npm test",
     "start": "node dist-node/server.js",
-    "test": "tsc -p tsconfig.node.json && tsc -p tsconfig.test.json && node --test .test-dist/tests",
+    "test": "tsc -p tsconfig.node.json && tsc -p tsconfig.test.json && node --test .test-dist/tests/*.test.js",
     "check": "tsc --noEmit && tsc -p tsconfig.node.json --noEmit"
   },
   "dependencies": {
