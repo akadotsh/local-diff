@@ -70,10 +70,10 @@ export async function getSnapshot(root: string, mode = 'all') {
 }
 
 export function createApp(root: string, token: string, reviewsPath = reviewFile(root), clients = new Set<ReviewClient>(), rexCommand = (args: string[]) => command('rex', args)) {
-  const dist = resolve(dirname(fileURLToPath(import.meta.url)), '../dist');
+  const dist = process.env.RPD_DIST_DIR ? resolve(process.env.RPD_DIST_DIR) : resolve(dirname(fileURLToPath(import.meta.url)), '../dist');
   return async (req: Request) => {
     const url = new URL(req.url);
-    if (url.pathname === '/events') return new Response(new ReadableStream<Uint8Array>({ start(c) { clients.add(c); req.signal.addEventListener('abort', () => clients.delete(c), { once: true }); } }), { headers: { 'content-type': 'text/event-stream', 'cache-control': 'no-cache' } });
+    if (url.pathname === '/events') return new Response(new ReadableStream<Uint8Array>({ start(c) { clients.add(c); c.enqueue(new TextEncoder().encode(': connected\n\n')); req.signal.addEventListener('abort', () => clients.delete(c), { once: true }); } }), { headers: { 'content-type': 'text/event-stream', 'cache-control': 'no-cache' } });
     if (url.pathname === '/api/diff' && req.method === 'GET') {
       try { return Response.json({ ...await getSnapshot(root, url.searchParams.get('mode') || 'all'), session: process.env.REX_SESSION || null }); }
       catch (error) { return Response.json({ error: String(error) }, { status: 400 }); }
@@ -189,4 +189,4 @@ export async function startServer(root = findRepository(), port = Number(process
   return server;
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) void startServer();
+if (process.argv[1] && /(?:^|[\\/])server\.js$/.test(process.argv[1])) void startServer();
