@@ -3,14 +3,16 @@ import { spawn, spawnSync } from 'node:child_process';
 import { open, readFile, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { parseCliArgs } from './shared/cliArgs.js';
+import { startServer } from './server.js';
 
 async function main() {
   const options = parseCliArgs(process.argv.slice(2), process.cwd());
   if (options.help) {
-    console.log('rex-pierre-diffs — review local Git changes inside Rex\n\nUsage: rex-pierre-diffs [--split right|left|above|below] [--cwd PATH] [--session ID] [--block ID]\n\nRun inside a Git repository in a Rex terminal. Requires Node.js, Git, Rex, and terminal-browser.');
+    console.log('rex-pierre-diffs — review local Git changes inside Rex\n\nUsage: rex-pierre-diffs [--split right|left|above|below] [--cwd PATH] [--session ID] [--block ID]\n\nRun inside a Git repository in a Rex terminal. Requires Git, Rex, and terminal-browser. Requires Node.js only for npm installations.');
     return;
   }
 
@@ -37,7 +39,8 @@ async function main() {
 
   const logPath = join(tmpdir(), `rex-pierre-diffs-server-${process.pid}.log`);
   const log = await open(logPath, 'a');
-  const serverPath = fileURLToPath(new URL('./server.js', import.meta.url));
+  const standalone = (() => { try { return createRequire(import.meta.url)('node:sea').isSea(); } catch { return false; } })();
+  const serverPath = standalone ? undefined : fileURLToPath(new URL('./server.js', import.meta.url));
   let info: { root: string; port: number } | undefined;
   for (let port = 4179; port < 4200; port++) {
     try {
@@ -56,8 +59,9 @@ async function main() {
       PORT: String(port),
       ...(session ? { REX_SESSION: session } : {}),
       ...(block ? { REX_BLOCK: block } : {}),
+      ...(standalone ? { RPD_DIST_DIR: join(fileURLToPath(new URL('.', import.meta.url)), 'dist') } : {}),
     };
-    const child = spawn(process.execPath, [serverPath], {
+    const child = spawn(standalone ? process.argv[1]! : process.execPath, standalone ? ['--internal-server'] : [serverPath!], {
       cwd: root,
       detached: true,
       stdio: ['ignore', log.fd, log.fd],
@@ -66,17 +70,19 @@ async function main() {
     child.unref();
     let startupError: Error | undefined;
     child.once('error', error => { startupError = error; });
+    if (child.pid) await unlink(join(tmpdir(), `rex-pierre-diffs-${child.pid}.json`)).catch(() => {});
 
     for (let i = 0; i < 100 && child.pid; i++) {
       try {
-        const infoPath = join(tmpdir(), `rex-pierre-diffs-${child.pid}.json`);
-        info = JSON.parse(await readFile(infoPath, 'utf8')) as { root: string; port: number };
-        await unlink(infoPath);
+        const childInfoPath = join(tmpdir(), `rex-pierre-diffs-${child.pid}.json`);
+        info = JSON.parse(await readFile(childInfoPath, 'utf8')) as { root: string; port: number };
+        await unlink(childInfoPath);
         break;
       } catch {}
       if (startupError || child.exitCode !== null) break;
       await delay(100);
     }
+    if (!info && child.exitCode === null) child.kill('SIGTERM');
     if (info) break;
   }
   await log.close();
@@ -95,7 +101,10 @@ async function main() {
   }
 }
 
-main().catch(error => {
+const reportError = (error: unknown) => {
   console.error(error instanceof Error ? error.message : String(error));
   process.exitCode = 1;
-});
+};
+
+if (process.argv[2] === '--internal-server') void startServer().catch(reportError);
+else void main().catch(reportError);

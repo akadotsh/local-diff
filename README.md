@@ -15,7 +15,7 @@ A graphical Git diff viewer for [Rex Terminal](https://www.superlogical.com/rex)
 - Ask an agent about selected code in a chosen Rex pane. You preview and confirm the text before insertion; the app does not press Enter for you.
 - Use a right-side or top/bottom split, with comfortable and compact display density.
 
-## Install
+## Install from npm or pnpm
 
 You need Node.js 20 or newer, Git, Rex Terminal, and [`terminal-browser`](https://github.com/zenbu-labs/terminal-browser). Install the package globally with npm or pnpm:
 
@@ -24,8 +24,6 @@ npm install --global rex-pierre-diffs
 # or
 pnpm add --global rex-pierre-diffs
 ```
-
-This installs both `rex-pierre-diffs` and the shorter `rpd` command.
 
 ## Use
 
@@ -43,7 +41,7 @@ For a top/bottom layout, run:
 rpd --split below
 ```
 
-The `--split` option also accepts `right` (the default), `left`, and `above`. Run `rpd --help` for all CLI options. From a coding agent's shell command input in Rex, `rpd` works the same way when shell commands are enabled.
+The `--split` option also accepts `right` (the default), `left`, and `above`. `rex-pierre-diffs` is the full command name; `rpd` is its shortcut. Run `rpd --help` for all CLI options. From a coding agent's shell command input in Rex, `rpd` works the same way when shell commands are enabled.
 
 ### Optional Rex shortcut
 
@@ -77,6 +75,8 @@ npm run build
 ```
 
 The CLI and local server use Node.js; the interface uses React and Pierre Diffs. The server binds to `127.0.0.1` and reads the local Git repository.
+
+To build and test the macOS ARM64 standalone executable, see the [standalone build guide](docs/standalone.md).
 
 ## License
 
