@@ -1,6 +1,6 @@
 {
   "name": "rex-pierre-diffs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "bin": {
     "rex-pierre-diffs": "./dist-node/cli.js",
