@@ -94,7 +94,10 @@ async function main() {
   const args = ['run', `--split=${options.split}`, '--ratio', '50', '--label', 'rex-pierre-diffs', '--focus=false', '--keep-open', '-c', root];
   if (session) args.push('--session', session);
   if (block) args.push('--block', block);
-  const result = spawnSync('rex', [...args, '--', 'terminal-browser', 'open', `http://127.0.0.1:${info.port}`], { encoding: 'utf8' });
+  const result = spawnSync('rex', [...args, '--', 'terminal-browser', 'open', `http://127.0.0.1:${info.port}`], {
+    encoding: 'utf8',
+    env: { ...process.env, TERMINAL_BROWSER_NO_CHROME: '1' },
+  });
   if (result.error || result.status !== 0) {
     const output = [result.stderr, result.stdout].filter(Boolean).join('\n').trim();
     throw new Error(`Rex failed to open the viewer (exit ${result.status}). Check rex and terminal-browser; the server remains running at http://127.0.0.1:${info.port}. Log: ${logPath}${output ? `\n${output}` : ''}${result.error ? `\n${result.error.message}` : ''}`);
