@@ -1,0 +1,14 @@
+Agent identification icons
+
+Claude: https://claude.com/icon.svg
+OpenAI (used to identify Codex): https://openai.com/favicon.svg
+OpenCode: https://opencode.ai/brand/files/opencode-logo-light.svg
+
+These assets were obtained from the respective official websites. The logos
+and trademarks belong to their respective owners and identify the selected
+third-party coding agent. Their inclusion does not imply endorsement.
+
+Brand guidance:
+https://www.anthropic.com/legal/trademark-guidelines
+https://openai.com/brand/
+https://opencode.ai/brand

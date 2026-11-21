@@ -69,6 +69,37 @@ export async function getSnapshot(root: string, mode = 'all') {
   return { app: 'rex-pierre-diffs', root, branch: git(root, ['branch', '--show-current']).trim(), patch: tracked + extra };
 }
 
+function agentPanes(session: string, rexCommand: (args: string[]) => CommandResult) {
+  const listed = rexCommand(['block', 'ls', '-s', session, '--json']);
+  if (listed.error || listed.status !== 0) throw new Error(listed.stderr.trim() || listed.error?.message || 'Could not list Rex panes');
+  const candidates = new Set<string>();
+  const visit = (value: unknown): void => {
+    if (Array.isArray(value)) value.forEach(visit);
+    else if (value && typeof value === 'object') {
+      const record = value as Record<string, unknown>;
+      const id = record.block_id || record.blockId;
+      if (typeof id === 'string') candidates.add(id);
+      Object.values(record).forEach(visit);
+    }
+  };
+  visit(JSON.parse(listed.stdout));
+  // shortcut: generic node/python wrappers are not detected; extend detection when Rex exposes their agent command.
+  const names: Record<string, string> = { codex: 'Codex', claude: 'Claude', opencode: 'OpenCode', gemini: 'Gemini', aider: 'Aider', amp: 'Amp', goose: 'Goose', 'cursor-agent': 'Cursor Agent', droid: 'Droid' };
+  const blocks: Array<{ id: string; label: string; agent: string }> = [];
+  for (const id of candidates) {
+    const result = rexCommand(['block', 'call', '-s', session, '-b', id, 'process']);
+    if (result.error || result.status !== 0) continue;
+    try {
+      const { foreground } = JSON.parse(result.stdout);
+      const agent = typeof foreground?.name === 'string' && Object.hasOwn(names, foreground.name) ? names[foreground.name] : undefined;
+      if (!agent) continue;
+      const cwd = typeof foreground.cwd === 'string' ? foreground.cwd.split(/[\\/]/).filter(Boolean).pop() : undefined;
+      blocks.push({ id, agent, label: cwd ? `${agent} · ${cwd}` : agent });
+    } catch { /* A pane may exit while its process is being inspected. */ }
+  }
+  return blocks;
+}
+
 export function createApp(root: string, token: string, reviewsPath = reviewFile(root), clients = new Set<ReviewClient>(), rexCommand = (args: string[]) => command('rex', args)) {
   const dist = process.env.RPD_DIST_DIR ? resolve(process.env.RPD_DIST_DIR) : resolve(dirname(fileURLToPath(import.meta.url)), '../dist');
   return async (req: Request) => {
@@ -90,14 +121,8 @@ export function createApp(root: string, token: string, reviewsPath = reviewFile(
     if (url.pathname === '/api/targets' && req.method === 'GET') {
       const rexSession = process.env.REX_SESSION;
       if (!rexSession) return Response.json({ error: 'This CLI was not launched from a Rex pane.' }, { status: 503 });
-      const result = rexCommand(['block', 'ls', '-s', rexSession, '--json']);
-      if (result.error || result.status !== 0) return Response.json({ error: result.stderr.trim() || result.error?.message || 'Could not list Rex panes' }, { status: 502 });
-      try {
-        const data = JSON.parse(result.stdout);
-        const blocks: Array<{ id: string; label: string }> = [];
-        const visit = (value: unknown): void => { if (Array.isArray(value)) value.forEach(visit); else if (value && typeof value === 'object') { const record = value as Record<string, unknown>; const id = record.block_id || record.blockId; if (typeof id === 'string') blocks.push({ id, label: String(record.label || record.title || id) }); Object.values(record).forEach(visit); } };
-        visit(data); return Response.json({ blocks });
-      } catch { return Response.json({ error: 'Rex returned invalid pane data' }, { status: 502 }); }
+      try { return Response.json({ blocks: agentPanes(rexSession, rexCommand) }); }
+      catch (error) { return Response.json({ error: String(error) }, { status: 502 }); }
     }
     if (url.pathname === '/api/send' && req.method === 'POST') {
       if (req.headers.get('x-review-token') !== token) return new Response('Forbidden', { status: 403 });
@@ -106,13 +131,10 @@ export function createApp(root: string, token: string, reviewsPath = reviewFile(
       try {
         const { blockId, message } = await req.json() as { blockId?: unknown; message?: unknown };
         if (typeof blockId !== 'string' || typeof message !== 'string' || !message.trim() || message.length > 30000) return new Response('Invalid destination or message', { status: 400 });
-        const listed = rexCommand(['block', 'ls', '-s', rexSession, '--json']);
-        if (listed.error || listed.status !== 0) return Response.json({ error: listed.stderr.trim() || listed.error?.message || 'Could not verify pane' }, { status: 502 });
-        const data = JSON.parse(listed.stdout);
-        const ids = new Set<string>();
-        const visit = (value: unknown): void => { if (Array.isArray(value)) value.forEach(visit); else if (value && typeof value === 'object') { const record = value as Record<string, unknown>; const id = record.block_id || record.blockId; if (typeof id === 'string') ids.add(id); Object.values(record).forEach(visit); } };
-        visit(data);
-        if (!ids.has(blockId)) return new Response('Selected pane is not in the active Rex session', { status: 403 });
+        let blocks: ReturnType<typeof agentPanes>;
+        try { blocks = agentPanes(rexSession, rexCommand); }
+        catch (error) { return Response.json({ error: String(error) }, { status: 502 }); }
+        if (!blocks.some(block => block.id === blockId)) return Response.json({ error: 'Selected pane is no longer running a recognized coding agent in this Rex session' }, { status: 403 });
         const result = rexCommand(['send', '-s', rexSession, '-b', blockId, message]);
         if (result.error || result.status !== 0) return Response.json({ error: result.stderr.trim() || result.error?.message || 'Rex could not send to that pane' }, { status: 502 });
         return Response.json({ ok: true });

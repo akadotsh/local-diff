@@ -11,8 +11,8 @@ A graphical Git diff viewer for [Rex Terminal](https://www.superlogical.com/rex)
 
 - Review staged, unstaged, and untracked changes with syntax-highlighted diffs.
 - Navigate changed files and see updates as repository files change.
-- Select added or removed lines, copy their source, and save local review notes.
-- Ask an agent about selected code in a chosen Rex pane. You preview and confirm the text before insertion; the app does not press Enter for you.
+- Select added or removed lines as context for your agent.
+- Ask an agent about selected code in a chosen Rex pane. Choose an agent pane and click **Ask Agent** to insert the selected code and your question; the app does not press Enter for you.
 - Use a right-side or top/bottom split, with comfortable and compact display density.
 
 ## Install from npm or pnpm
@@ -33,7 +33,7 @@ Open a Git repository in Rex and run:
 rpd
 ```
 
-The viewer opens beside your terminal and shows the repository's current changes. Use **All changes**, **Working tree**, or **Staged** to choose what to review. Click changed lines to add a note, copy code, or ask an agent a question. Review notes stay local to the repository.
+The viewer opens beside your terminal and shows the repository's current changes. Use **All changes**, **Working tree**, or **Staged** to choose what to review. Select changed lines to ask an agent a question. Review notes stay local to the repository. The agent picker lists recognized foreground coding-agent processes, excluding ordinary shells and browser panes. Agents hidden behind generic Node.js or Python wrapper processes may not be detected.
 
 For a top/bottom layout, run:
 

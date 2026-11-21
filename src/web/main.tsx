@@ -1,7 +1,14 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createRoot } from "react-dom/client";
 import { PatchDiff } from "@pierre/diffs/react";
-import { parsePatchFiles } from "@pierre/diffs";
+import { parsePatchFiles, type DiffLineAnnotation } from "@pierre/diffs";
 import {
   reviewMessage,
   selectionContext,
@@ -12,6 +19,12 @@ import "./style.css";
 const token =
   document.querySelector<HTMLMetaElement>('meta[name="review-token"]')
     ?.content || "";
+const agentIcons: Record<string, string> = {
+  Codex: new URL("./assets/codex.svg", import.meta.url).href,
+  Claude: new URL("./assets/claude.svg", import.meta.url).href,
+  OpenCode: new URL("./assets/opencode.svg", import.meta.url).href,
+};
+const NO_ANNOTATIONS: DiffLineAnnotation[] = [];
 type Selection = {
   patch: string;
   range: DiffSelection;
@@ -25,15 +38,12 @@ function App() {
   const [activeFile, setActiveFile] = useState<string>();
   const [viewed, setViewed] = useState<Set<string>>(() => new Set());
   const [comments, setComments] = useState<any[]>([]);
-  const [body, setBody] = useState("");
   const [selection, setSelection] = useState<Selection>();
   const [question, setQuestion] = useState("");
-  const [targets, setTargets] = useState<{ id: string; label: string }[]>([]);
+  const [targets, setTargets] = useState<{ id: string; label: string; agent: string }[]>([]);
   const [target, setTarget] = useState(
     localStorage.getItem("rex-review-agent") || "",
   );
-  const [dialog, setDialog] = useState(false);
-  const [confirm, setConfirm] = useState(false);
   const [status, setStatus] = useState("");
   const [mobileView, setMobileView] = useState<"diff" | "files">("diff");
   const [density, setDensity] = useState<"comfortable" | "compact">(
@@ -45,14 +55,21 @@ function App() {
   const layoutRef = useRef<HTMLElement>(null);
   const previousDiffX = useRef<number | null>(null);
   useLayoutEffect(() => {
-    const content = layoutRef.current?.querySelector<HTMLElement>(".diff-content");
+    const content =
+      layoutRef.current?.querySelector<HTMLElement>(".diff-content");
     const previousX = previousDiffX.current;
     previousDiffX.current = null;
     if (!content || previousX === null) return;
     const offset = previousX - content.getBoundingClientRect().left;
     const animation = content.animate(
-      [{ transform: `translateX(${offset}px)` }, { transform: "translateX(0)" }],
-      { duration: 200, easing: getComputedStyle(content).getPropertyValue("--ease-out").trim() },
+      [
+        { transform: `translateX(${offset}px)` },
+        { transform: "translateX(0)" },
+      ],
+      {
+        duration: 200,
+        easing: getComputedStyle(content).getPropertyValue("--ease-out").trim(),
+      },
     );
     return () => animation.cancel();
   }, [sidebarOpen]);
@@ -69,18 +86,23 @@ function App() {
     fetch("/api/reviews")
       .then((r) => r.json())
       .then(setComments);
-    fetch("/api/targets")
-      .then((r) => r.json())
-      .then((d) => {
-        setTargets(d.blocks || []);
-        if (target && !(d.blocks || []).some((b: any) => b.id === target))
-          setTarget("");
-      })
-      .catch(() => {});
     const e = new EventSource("/events");
     e.onmessage = load;
     return () => e.close();
   }, [mode]);
+  useEffect(() => {
+    if (!selection) return;
+    const controller = new AbortController();
+    setTargets([]);
+    fetch("/api/targets", { signal: controller.signal })
+      .then(async r => { const data = await r.json(); if (!r.ok) throw new Error(data.error || "Could not find agent panes"); return data; })
+      .then(d => {
+        setTargets(d.blocks);
+        setTarget(current => d.blocks.some((block: { id: string }) => block.id === current) ? current : "");
+      })
+      .catch(error => { if (!controller.signal.aborted) { setTarget(""); setStatus(String(error)); } });
+    return () => controller.abort();
+  }, [selection]);
   const files: string[] = useMemo(() => {
     const patch = data?.patch || "";
     return patch
@@ -107,6 +129,9 @@ function App() {
     .filter((file) =>
       file.name.toLowerCase().includes(search.trim().toLowerCase()),
     );
+  const selectedAgent = targets.find(t => t.id === target)?.agent;
+  const agentName = selectedAgent === "Claude" ? "Claude Code" : selectedAgent;
+  const agentIcon = selectedAgent ? agentIcons[selectedAgent] : undefined;
   const context = selection?.context;
   const message = () =>
     context && reviewMessage(data?.root || "", context, question);
@@ -118,12 +143,30 @@ function App() {
       setStatus("Clipboard unavailable. Select and copy the message below.");
     }
   }
-  function choose(range: DiffSelection | null, patch: string) {
-    if (!range) return;
+  const choose = useCallback((range: DiffSelection | null, patch: string) => {
+    if (!range) {
+      setSelection(undefined);
+      return;
+    }
     setSelection({ patch, range, context: selectionContext(patch, range) });
-  }
+  }, []);
+  const annotations = useMemo<DiffLineAnnotation[]>(() => selection ? [{
+    side: selection.range.endSide ?? selection.range.side ?? "additions",
+    lineNumber: selection.range.end,
+  }] : NO_ANNOTATIONS, [selection]);
+  const diffOptions = useMemo(() => files.map(patch => ({
+    unsafeCSS: ":host { --diffs-bg: #19191b; }",
+    theme: "pierre-dark",
+    themeType: "dark" as const,
+    diffStyle: "unified" as const,
+    overflow: "wrap" as const,
+    expandUnchanged: false,
+    collapsedContextThreshold: 2,
+    enableLineSelection: true,
+    onLineSelectionEnd: (range: DiffSelection | null) => choose(range, patch),
+  })), [files, choose]);
   async function send() {
-    if (!selection || !target || !confirm) return;
+    if (!selection || !targets.some(t => t.id === target)) return;
     setStatus("Sending…");
     try {
       const r = await fetch("/api/send", {
@@ -138,31 +181,11 @@ function App() {
       if (!r.ok) throw new Error(result.error || "Delivery failed");
       localStorage.setItem("rex-review-agent", target);
       setStatus("Inserted into selected pane. It was not submitted.");
-      setDialog(false);
-      setConfirm(false);
+      setSelection(undefined);
     } catch (e) {
       setStatus(`Delivery failed: ${String(e)}`);
     }
   }
-  const addComment = () => {
-    if (!selection || !body.trim()) return;
-    const next = [
-      ...comments,
-      {
-        id: crypto.randomUUID(),
-        file: context?.filename,
-        range: `${context?.start}-${context?.end}`,
-        body,
-      },
-    ];
-    setComments(next);
-    void fetch("/api/reviews", {
-      method: "POST",
-      headers: { "content-type": "application/json", "x-review-token": token },
-      body: JSON.stringify(next),
-    });
-    setBody("");
-  };
   return (
     <>
       <header className="app-header">
@@ -219,11 +242,15 @@ function App() {
               title={sidebarOpen ? "Hide files" : "Show files"}
               aria-expanded={sidebarOpen}
               onClick={(e) => {
-                const animate = e.detail > 0 && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+                const animate =
+                  e.detail > 0 &&
+                  !matchMedia("(prefers-reduced-motion: reduce)").matches;
                 const layout = layoutRef.current;
                 if (layout) layout.dataset.sidebarMotion = String(animate);
                 previousDiffX.current = animate
-                  ? layout?.querySelector(".diff-content")?.getBoundingClientRect().left ?? null
+                  ? (layout
+                      ?.querySelector(".diff-content")
+                      ?.getBoundingClientRect().left ?? null)
                   : null;
                 setSidebarOpen(!sidebarOpen);
               }}
@@ -307,40 +334,6 @@ function App() {
             if (current) setActiveFile(current.dataset.file);
           }}
         >
-          {selection && (
-            <div className="selection-toolbar">
-              <div className="selected-heading">
-                {context?.filename} · {context?.start}
-                {context?.end !== context?.start ? `–${context?.end}` : ""} (
-                {context?.side})
-              </div>
-              <details>
-                <summary>Selected source</summary>
-                <pre className="selected-code">
-                  {context?.code || "(No source lines in selection)"}
-                </pre>
-              </details>
-              <button
-                onClick={() => {
-                  setDialog(true);
-                  setConfirm(false);
-                }}
-              >
-                Ask Agent
-              </button>
-              <textarea
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-                placeholder="Comment on selected lines"
-              />
-              <button onClick={addComment} disabled={!body.trim()}>
-                Add Comment
-              </button>
-              <button onClick={() => copy(context?.code || "")}>
-                Copy selected code
-              </button>
-            </div>
-          )}
           <details className="review-notes">
             <summary>Review notes ({comments.length})</summary>
             {comments.map((c) => (
@@ -368,6 +361,84 @@ function App() {
                 ) : (
                   <PatchDiff
                     patch={f}
+                    selectedLines={
+                      selection?.patch === f ? selection.range : null
+                    }
+                    lineAnnotations={selection?.patch === f ? annotations : NO_ANNOTATIONS}
+                    renderAnnotation={() => (
+                      <div
+                        className="inline-composer"
+                        role="region"
+                        aria-label="Ask Agent about selected lines"
+                        onKeyDown={(e) => {
+                          if (e.key === "Escape") {
+                            setSelection(undefined);
+                          }
+                        }}
+                      >
+                        <div className="composer-heading">
+                          <div className="composer-title">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 7 4 4-4 4m8 0h6" /></svg>
+                            <strong>Ask Agent</strong>
+                            <span className="composer-line-badge">
+                              L{context?.start}
+                              {context?.end !== context?.start
+                                ? `–${context?.end}`
+                                : ""}{" "}
+                              · {context?.side}
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            className="composer-close"
+                            aria-label="Close composer"
+                            onClick={() => {
+                              setSelection(undefined);
+                            }}
+                          >
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" /></svg>
+                          </button>
+                        </div>
+                        <textarea
+                          aria-label="Question for agent"
+                          value={question}
+                          onChange={(e) => setQuestion(e.target.value)}
+                          placeholder="Ask about these lines…"
+                          rows={3}
+                        />
+                        <div className="composer-actions">
+                          <div className="composer-destination">
+                          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m7 9 3 3-3 3m6 0h4"/></svg>
+                          <select
+                            aria-label="Target Rex pane"
+                            title={targets.find(t => t.id === target)?.label || "Choose an agent pane"}
+                            value={target}
+                            onChange={(e) => {
+                              setTarget(e.target.value);
+                            }}
+                          >
+                            <option value="">{targets.length ? "Choose agent pane…" : "No recognized agent panes"}</option>
+                            {targets.map((t) => (
+                              <option key={t.id} value={t.id}>
+                                {t.label} · {t.id.slice(-6)}
+                              </option>
+                            ))}
+                          </select>
+                          </div>
+                          <button
+                            className="ask-agent-button"
+                            disabled={!targets.some(t => t.id === target)}
+                            onClick={send}
+                          >
+                            {agentIcon && <img className="agent-icon" src={agentIcon} alt="" width="16" height="16" />}
+                            {agentName ? `Ask ${agentName}` : "Ask Agent"}
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
+                          </button>
+                        </div>
+
+
+                      </div>
+                    )}
                     renderHeaderFilenameSuffix={() => (
                       <button
                         type="button"
@@ -393,18 +464,7 @@ function App() {
                           density === "comfortable" ? "22px" : "19px",
                       } as React.CSSProperties
                     }
-                    options={{
-                      unsafeCSS: ":host { --diffs-bg: #19191b; }",
-                      theme: "pierre-dark",
-                      themeType: "dark",
-                      diffStyle: "unified",
-                      overflow: "wrap",
-                      expandUnchanged: false,
-                      collapsedContextThreshold: 2,
-                      enableLineSelection: true,
-                      onLineSelectionChange: (range: DiffSelection | null) =>
-                        choose(range, f),
-                    }}
+                    options={diffOptions[i]}
                   />
                 )}
               </article>
@@ -437,58 +497,6 @@ function App() {
           )}
         </section>
       </main>
-      {dialog && selection && (
-        <div className="modal-backdrop">
-          <div className="modal">
-            <h2>Ask Agent about selected lines</h2>
-            <p>
-              {context?.filename}:{context?.start}
-              {context?.end !== context?.start ? `–${context?.end}` : ""} ·{" "}
-              {context?.side}
-            </p>
-            <pre>{context?.code}</pre>
-            <textarea
-              autoFocus
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="What should the agent check?"
-            />
-            <label>
-              Target Rex pane
-              <select
-                value={target}
-                onChange={(e) => setTarget(e.target.value)}
-              >
-                <option value="">Choose a pane…</option>
-                {targets.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.label} · {t.id}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <details>
-              <summary>Preview message</summary>
-              <textarea readOnly value={message()} />
-            </details>
-            <button onClick={() => copy(message() || "")}>
-              Copy to Clipboard
-            </button>
-            <label className="confirm">
-              <input
-                type="checkbox"
-                checked={confirm}
-                onChange={(e) => setConfirm(e.target.checked)}
-              />{" "}
-              Confirm insertion into the selected pane
-            </label>
-            <button disabled={!confirm || !target} onClick={send}>
-              Insert without submitting
-            </button>
-            <button onClick={() => setDialog(false)}>Cancel</button>
-          </div>
-        </div>
-      )}
       {status && (
         <div className="status" role="status">
           {status}

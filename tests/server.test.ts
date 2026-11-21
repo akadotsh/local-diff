@@ -124,21 +124,40 @@ describe('HTTP API', () => {
     assert.deepEqual(await (await app(new Request('http://localhost/api/reviews'))).json(), [{ body: 'note' }]);
     assert.equal((await app(new Request('http://localhost/missing'))).status, 404);
   });
-  test('lists active Rex panes and sends only to a verified pane as one text argument', async () => {
+  test('lists only foreground coding agents and rechecks before inserting text', async () => {
     const previous = process.env.REX_SESSION;
     process.env.REX_SESSION = 'session:test';
     const calls: string[][] = [];
-    const fake = (args: string[]) => { calls.push(args); return { status: 0, stdout: args[0] === 'send' ? '' : JSON.stringify([{ block_id: 'block:agent', label: 'Codex' }]), stderr: '' }; };
+    let agentRunning = true;
+    const fake = (args: string[]) => {
+      calls.push(args);
+      if (args[0] === 'send') return { status: 0, stdout: '', stderr: '' };
+      if (args[1] === 'ls') return { status: 0, stdout: JSON.stringify({ blocks: [
+        { block_id: 'block:agent', label: 'shell' },
+        { block_id: 'block:shell', label: 'Codex' },
+        { block_id: 'block:browser', label: 'browser' },
+        { block_id: 'block:gone' },
+      ] }), stderr: '' };
+      const id = args[args.indexOf('-b') + 1];
+      if (id === 'block:gone') return { status: 1, stdout: '', stderr: 'Pane closed' };
+      const name = id === 'block:agent' && agentRunning ? 'codex' : id === 'block:browser' ? 'rexweb-pane' : 'zsh';
+      return { status: 0, stdout: JSON.stringify({ foreground: { name, cwd: '/work/project' } }), stderr: '' };
+    };
     try {
       const app = createApp(root, 'test-token', join(root, 'review.json'), new Set(), fake);
       const targets = await app(new Request('http://localhost/api/targets'));
-      assert.deepEqual(await targets.json(), { blocks: [{ id: 'block:agent', label: 'Codex' }] });
+      assert.deepEqual(await targets.json(), { blocks: [{ id: 'block:agent', agent: 'Codex', label: 'Codex · project' }] });
       const message = 'Review this line\nDo not submit it';
       const sent = await app(new Request('http://localhost/api/send', { method: 'POST', headers: { 'x-review-token': 'test-token', 'content-type': 'application/json' }, body: JSON.stringify({ blockId: 'block:agent', message }) }));
       assert.equal(sent.status, 200);
       assert.deepEqual(calls.at(-1), ['send', '-s', 'session:test', '-b', 'block:agent', message]);
       const rejected = await app(new Request('http://localhost/api/send', { method: 'POST', headers: { 'x-review-token': 'test-token', 'content-type': 'application/json' }, body: JSON.stringify({ blockId: 'block:other', message }) }));
       assert.equal(rejected.status, 403);
+      agentRunning = false;
+      const exited = await app(new Request('http://localhost/api/send', { method: 'POST', headers: { 'x-review-token': 'test-token', 'content-type': 'application/json' }, body: JSON.stringify({ blockId: 'block:agent', message }) }));
+      assert.equal(exited.status, 403);
+      assert.equal(calls.filter(args => args[0] === 'send').length, 1);
+      assert.deepEqual(await (await app(new Request('http://localhost/api/targets'))).json(), { blocks: [] });
     } finally { if (previous === undefined) delete process.env.REX_SESSION; else process.env.REX_SESSION = previous; }
   });
   test('returns a helpful response when the frontend has not been built', async () => {

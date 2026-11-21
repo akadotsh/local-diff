@@ -73,23 +73,7 @@ summary { user-select: none; }
 .empty-state small { margin-top: 8px; color: #96969e; font-size: 12px; }
 pre { margin: 0; padding: 12px; white-space: pre; overflow: auto; font: 12px/1.65 ui-monospace, SFMono-Regular, monospace; }
 textarea { display: block; width: 100%; min-height: 90px; padding: 9px 10px; margin: 8px 0; resize: vertical; }
-.selection-toolbar { padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--surface); flex-shrink: 0; }
-.selected-heading { margin-bottom: 8px; font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
-.selection-toolbar details { color: var(--muted); font-size: 12px; }
-.selection-toolbar button { margin: 4px 6px 0 0; }
-.selection-toolbar textarea { min-height: 56px; }
-.selected-code { max-height: 24vh; margin-top: 8px; border: 1px solid var(--border); border-radius: 6px; background: #19191b; }
 .collapsed-diff { width: 100%; padding: 12px 18px; border: 0; border-radius: 0; background: var(--surface); text-align: left; color: var(--muted); }
-.modal-backdrop { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; background: #0008; padding: 16px; }
-.modal { width: min(560px, 100%); max-height: 90dvh; overflow: auto; padding: 24px; border: 1px solid #ffffff20; border-radius: 12px; background: #242426; box-shadow: 0 24px 80px #0008; }
-.modal h2 { margin: 0 0 8px; font-size: 16px; font-weight: 600; letter-spacing: -.3px; }
-.modal p { color: var(--muted); overflow-wrap: anywhere; }
-.modal pre { max-height: 180px; background: #19191b; border: 1px solid var(--border); border-radius: 6px; }
-.modal label { display: block; margin: 14px 0; font-size: 12px; }
-.modal label select { display: block; width: 100%; margin-top: 6px; }
-.modal button { margin: 4px 6px 0 0; }
-.modal .confirm { display: flex; align-items: flex-start; gap: 8px; }
-.modal details textarea { font: 12px/1.5 ui-monospace, monospace; }
 .status { position: fixed; z-index: 6; bottom: 16px; right: 16px; max-width: calc(100% - 32px); border: 1px solid #ffffff20; border-radius: 8px; padding: 10px 14px; background: #303033; box-shadow: 0 6px 24px #0005; font-size: 12px; }
 .app-error { color: #ffb4ab; white-space: pre-wrap; }
 body[data-density="compact"] .app-header { min-height: 44px; padding-block: 6px; }
@@ -145,4 +129,40 @@ body[data-density="compact"] .review-notes { padding-block: 6px; }
 @media (prefers-reduced-motion: reduce) {
   main[data-sidebar-motion="true"] > aside,
   main[data-sidebar-motion="true"] .sidebar-toggle { transition: none; }
+}
+
+.inline-composer { margin: 10px 14px 14px; border: 1px solid #ffffff1c; border-radius: 9px; background: #222224; box-shadow: 0 2px 8px #0002; color: #e3e3e5; font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; white-space: normal; overflow-wrap: anywhere; overflow: hidden; }
+.inline-composer:focus-within { border-color: #ffffff30; }
+.composer-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px 0 14px; }
+.composer-title { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.composer-title > svg { width: 15px; height: 15px; color: #a6a6b0; }
+.composer-title strong { font-size: 12px; font-weight: 550; white-space: nowrap; }
+.composer-line-badge { margin-left: 2px; padding: 1px 5px; border: 1px solid #ffffff0b; border-radius: 4px; color: #a7a7b1; font: 10px/1.5 ui-monospace, SFMono-Regular, monospace; white-space: nowrap; }
+.composer-close { display: grid; place-items: center; flex: none; padding: 4px; width: 24px; min-height: 24px; border: 0; background: transparent; color: #96969e; }
+.composer-close svg { width: 14px; height: 14px; }
+.inline-composer > textarea { min-height: 78px; margin: 0; padding: 11px 14px 14px; border: 0; border-radius: 0; background: transparent; font-size: 13px; line-height: 1.6; }
+.inline-composer > textarea:focus-visible { outline: none; }
+.composer-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 10px; border-top: 1px solid #ffffff0a; background: #1e1e20; }
+.composer-destination { display: flex; align-items: center; gap: 6px; min-width: 0; max-width: 65%; }
+.composer-destination > svg { width: 14px; height: 14px; color: #92929c; margin-left: 3px; }
+.composer-destination select { min-width: 0; width: 100%; min-height: 28px; padding: 3px 5px; border-color: transparent; background: transparent; color: #bdbdc7; font-size: 11px; text-overflow: ellipsis; }
+.ask-agent-button { display: inline-flex; align-items: center; justify-content: center; flex: none; gap: 7px; min-width: 112px; min-height: 28px; padding: 4px 9px; border-color: #ffffff0a; border-radius: 5px; background: #dddde2; color: #202022; font-size: 11px; font-weight: 600; white-space: nowrap; box-shadow: 0 1px 2px #0002; }
+.ask-agent-button > svg { width: 13px; height: 13px; margin-left: 3px; }
+.ask-agent-button:disabled { background: #ffffff09; color: #92929d; opacity: 1; box-shadow: none; }
+.agent-icon { color-scheme: light; display: block; width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .inline-composer { transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out); }
+  @starting-style { .inline-composer { opacity: 0; transform: translateY(-6px); } }
+}
+@media (hover: hover) and (pointer: fine) {
+  .ask-agent-button:hover:not(:disabled) { background: #f2f2f5; }
+  .composer-destination select:hover { background: #ffffff06; }
+}
+@media (max-width: 480px) {
+  .inline-composer { margin: 8px; }
+  .composer-heading { padding-left: 12px; }
+  .inline-composer > textarea { padding-inline: 12px; }
+  .composer-actions { flex-wrap: wrap; gap: 8px; }
+  .composer-destination { max-width: 100%; flex: 1 1 140px; }
+  .ask-agent-button { margin-left: auto; }
 }
