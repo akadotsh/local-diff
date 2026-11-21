@@ -422,7 +422,7 @@ function App() {
                             <option value="">{targets.length ? "Choose agent pane…" : "No recognized agent panes"}</option>
                             {targets.map((t) => (
                               <option key={t.id} value={t.id}>
-                                {t.label} · {t.id.slice(-6)}
+                                {t.agent} · {t.id.slice(-6)}
                               </option>
                             ))}
                           </select>
