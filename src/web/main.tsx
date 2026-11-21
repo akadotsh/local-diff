@@ -192,7 +192,9 @@ function App() {
         <div className="app-identity">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <rect x="3" y="3" width="18" height="18" rx="5" />
-            <path d="M8 8h3m-3 4h8m-3 4h3" />
+            <path d="M8 8h5" stroke="#ff6b7a" />
+            <path d="M8 12h8" />
+            <path d="M11 16h5" stroke="#3dd68c" />
           </svg>
           <b>Rex Pierre Diffs</b>
         </div>

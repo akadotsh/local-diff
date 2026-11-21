@@ -1,6 +1,8 @@
-# rex-pierre-diffs
+<img src="docs/logo.svg" width="64" height="64" alt="">
 
-A graphical Git diff viewer for [Rex Terminal](https://www.superlogical.com/rex), powered by [Pierre Diffs](https://diffs.com/docs). Review changes, leave notes on selected lines, and send code context to a coding agent without leaving your terminal.
+# Rex Pierre Diffs
+
+A graphical Git diff viewer for [Rex Terminal](https://www.superlogical.com/rex), powered by [Pierre Diffs](https://diffs.com/docs). Review changes, select lines, and send code context to a coding agent without leaving your terminal.
 
 > [!NOTE]
 > This is an independent, community-maintained project and is not an official part of Rex.
@@ -33,7 +35,7 @@ Open a Git repository in Rex and run:
 rpd
 ```
 
-The viewer opens beside your terminal and shows the repository's current changes. Use **All changes**, **Working tree**, or **Staged** to choose what to review. Select changed lines to ask an agent a question. Review notes stay local to the repository. The agent picker lists recognized foreground coding-agent processes, excluding ordinary shells and browser panes. Agents hidden behind generic Node.js or Python wrapper processes may not be detected.
+The viewer opens beside your terminal and shows the repository's current changes. Use **All changes**, **Working tree**, or **Staged** to choose what to review. Select changed lines to ask an agent a question. The agent picker lists recognized foreground coding-agent processes, excluding ordinary shells and browser panes. Agents hidden behind generic Node.js or Python wrapper processes may not be detected.
 
 For a top/bottom layout, run:
 
@@ -45,7 +47,7 @@ The `--split` option also accepts `right` (the default), `left`, and `above`. `r
 
 ### Optional Rex shortcut
 
-The included `rex-pierre-diffs.lua` adds **Open Pierre Diffs** to Rex's Command Palette and binds `Cmd`+`Shift`+`G`. Copy it from the globally installed package into your Rex config directory:
+The included `rex-pierre-diffs.lua` adds **Open Rex Pierre Diffs** to Rex's Command Palette and binds `Cmd`+`Shift`+`G`. Copy it from the globally installed package into your Rex config directory:
 
 ```sh
 rex_config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/rex"

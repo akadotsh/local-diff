@@ -4,13 +4,13 @@ local split_direction = "right"
 
 rex.action{
   name = "open_pierre_diffs",
-  title = "Open Pierre Diffs",
+  title = "Open Rex Pierre Diffs",
   description = "Review Git changes beside the active terminal pane.",
   category = "Code Review",
   keywords = "git diff review",
   run = function(ctx)
     if not ctx.session_id or not ctx.block_id then
-      error("Open Pierre Diffs from an active Rex terminal pane", 0)
+      error("Open Rex Pierre Diffs from an active Rex terminal pane", 0)
     end
 
     local terminal = "com.superlogical.terminal"

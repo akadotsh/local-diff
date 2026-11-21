@@ -50,8 +50,8 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
 .viewed-toggle[aria-pressed="true"] { color: #98c9aa; }
 .viewed-toggle[aria-pressed="true"] path { opacity: 1; }
 .change-totals { display: flex; gap: 5px; font-size: 10px; font-variant-numeric: tabular-nums; }
-.change-totals span:first-child { color: #98c9aa; }
-.change-totals span:last-child { color: #d9a1a1; }
+.change-totals span:first-child { color: #3dd68c; }
+.change-totals span:last-child { color: #ff6b7a; }
 aside > p { color: var(--muted); font-size: 12px; padding: 0 8px; }
 .sidebar-footer { display: flex; align-items: center; gap: 7px; margin-top: auto; padding: 20px 4px 2px; color: var(--muted); font-size: 10px; white-space: nowrap; }
 .connection-dot { width: 5px; height: 5px; border-radius: 50%; background: #94bda0; flex: none; }
