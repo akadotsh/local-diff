@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { PatchDiff } from "@pierre/diffs/react";
 import { parsePatchFiles } from "@pierre/diffs";
@@ -42,6 +42,20 @@ function App() {
         "comfortable" | "compact") || "comfortable",
   );
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const layoutRef = useRef<HTMLElement>(null);
+  const previousDiffX = useRef<number | null>(null);
+  useLayoutEffect(() => {
+    const content = layoutRef.current?.querySelector<HTMLElement>(".diff-content");
+    const previousX = previousDiffX.current;
+    previousDiffX.current = null;
+    if (!content || previousX === null) return;
+    const offset = previousX - content.getBoundingClientRect().left;
+    const animation = content.animate(
+      [{ transform: `translateX(${offset}px)` }, { transform: "translateX(0)" }],
+      { duration: 200, easing: getComputedStyle(content).getPropertyValue("--ease-out").trim() },
+    );
+    return () => animation.cancel();
+  }, [sidebarOpen]);
   useEffect(() => {
     document.body.dataset.density = density;
     localStorage.setItem("rex-review-density", density);
@@ -194,6 +208,7 @@ function App() {
         </select>
       </header>
       <main
+        ref={layoutRef}
         className={`mobile-${mobileView} ${sidebarOpen ? "" : "sidebar-collapsed"}`}
       >
         <aside>
@@ -202,7 +217,16 @@ function App() {
               className="sidebar-toggle"
               aria-label={sidebarOpen ? "Hide files" : "Show files"}
               title={sidebarOpen ? "Hide files" : "Show files"}
-              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-expanded={sidebarOpen}
+              onClick={(e) => {
+                const animate = e.detail > 0 && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+                const layout = layoutRef.current;
+                if (layout) layout.dataset.sidebarMotion = String(animate);
+                previousDiffX.current = animate
+                  ? layout?.querySelector(".diff-content")?.getBoundingClientRect().left ?? null
+                  : null;
+                setSidebarOpen(!sidebarOpen);
+              }}
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <rect x="3" y="4" width="18" height="16" rx="2" />
@@ -263,7 +287,7 @@ function App() {
           {search && visibleFiles.length === 0 && <p>No matching files.</p>}
           <div className="sidebar-footer">
             <span className="connection-dot" aria-hidden="true" />
-            <span>Local repository</span>
+            <span>Local</span>
             <span className="footer-branch" title={data?.branch}>
               {data?.branch}
             </span>

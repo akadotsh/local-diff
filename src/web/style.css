@@ -128,3 +128,21 @@ body[data-density="compact"] .review-notes { padding-block: 6px; }
 .mobile-tabs button[aria-pressed="true"] { background: #ffffff0b; border-color: var(--border); color: #e3e3e5; }
 .copy-filename { display: inline-grid; place-items: center; width: 28px; min-height: 28px; margin-left: 4px; padding: 5px; border-color: transparent; background: transparent; color: var(--muted); vertical-align: middle; }
 .copy-filename svg { width: 14px; height: 14px; }
+
+@media (min-width: 801px) {
+  main { overflow: hidden; }
+  main > aside { width: 248px; position: relative; z-index: 1; }
+  main .sidebar-toggle { transition: none; }
+  main.sidebar-collapsed > aside { transform: translateX(-196px); }
+  main.sidebar-collapsed .sidebar-toggle { transform: translateX(196px); }
+  main.sidebar-collapsed .sidebar-heading { margin-bottom: 10px; }
+  main.sidebar-collapsed .sidebar-heading h3,
+  main.sidebar-collapsed .change-totals,
+  main.sidebar-collapsed > aside > :not(.sidebar-heading) { display: revert; visibility: hidden; }
+  main[data-sidebar-motion="true"] > aside,
+  main[data-sidebar-motion="true"] .sidebar-toggle { transition: transform 200ms var(--ease-out); }
+}
+@media (prefers-reduced-motion: reduce) {
+  main[data-sidebar-motion="true"] > aside,
+  main[data-sidebar-motion="true"] .sidebar-toggle { transition: none; }
+}
