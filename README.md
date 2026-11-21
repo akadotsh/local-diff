@@ -17,7 +17,7 @@ A graphical Git diff viewer for [Rex Terminal](https://www.superlogical.com/rex)
 
 ## Install from npm or pnpm
 
-You need Node.js 20 or newer, Git, Rex Terminal, and [`terminal-browser`](https://github.com/zenbu-labs/terminal-browser). Install the package globally with npm or pnpm:
+You need macOS 14 or newer, Node.js 20 or newer, Git, Rex Terminal, and [`rexweb`](https://github.com/acoyfellow/rexweb). Follow rexweb's installation instructions first, ensure `rexweb` is on your PATH, and run `rexweb doctor` to check the setup. Then install this package globally with npm or pnpm:
 
 ```sh
 npm install --global rex-pierre-diffs

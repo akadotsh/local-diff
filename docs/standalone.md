@@ -8,7 +8,7 @@ npm run build:standalone
 npm run test:standalone
 ```
 
-The output is `dist-standalone/`: `rpd`, its `rex-pierre-diffs` alias, and the sibling `dist/` directory of frontend assets. Keep the directory together. Node.js, npm, pnpm, and Bun are not needed to run it. Git, Rex, and `terminal-browser` remain external requirements.
+The output is `dist-standalone/`: `rpd`, its `rex-pierre-diffs` alias, and the sibling `dist/` directory of frontend assets. Keep the directory together. Node.js, npm, pnpm, and Bun are not needed to run it. macOS 14 or newer, Git, Rex, and `rexweb` remain external requirements. Install [rexweb](https://github.com/acoyfellow/rexweb), ensure it is on your PATH, and run `rexweb doctor` before opening the viewer.
 
 To run it from a Git repository in Rex after building from this repository:
 

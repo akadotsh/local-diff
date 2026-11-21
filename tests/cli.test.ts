@@ -22,4 +22,5 @@ test('compiled production CLI runs with Node.js outside the repository', () => {
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Usage: rex-pierre-diffs/);
   assert.match(result.stdout, /Requires Node\.js/);
+  assert.match(result.stdout, /macOS 14 or newer, Git, Rex, and rexweb/);
 });

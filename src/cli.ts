@@ -12,7 +12,7 @@ import { startServer } from './server.js';
 async function main() {
   const options = parseCliArgs(process.argv.slice(2), process.cwd());
   if (options.help) {
-    console.log('rex-pierre-diffs — review local Git changes inside Rex\n\nUsage: rex-pierre-diffs [--split right|left|above|below] [--cwd PATH] [--session ID] [--block ID]\n\nRun inside a Git repository in a Rex terminal. Requires Git, Rex, and terminal-browser. Requires Node.js only for npm installations.');
+    console.log('rex-pierre-diffs — review local Git changes inside Rex\n\nUsage: rex-pierre-diffs [--split right|left|above|below] [--cwd PATH] [--session ID] [--block ID]\n\nRun inside a Git repository in a Rex terminal. Requires macOS 14 or newer, Git, Rex, and rexweb. Requires Node.js only for npm installations.');
     return;
   }
 
@@ -23,7 +23,7 @@ async function main() {
   if (repoResult.error || repoResult.status !== 0) throw new Error(`Run inside a Git repository: ${repoResult.stderr?.trim() || repoResult.error?.message || 'git failed'}`);
   const root = repoResult.stdout.trim();
 
-  for (const [binary, args] of [['rex', ['whoami', '--json']], ['terminal-browser', ['--version']]] as const) {
+  for (const [binary, args] of [['rex', ['whoami', '--json']], ['rexweb', ['--version']]] as const) {
     const check = spawnSync(binary, args, { encoding: 'utf8' });
     if (check.error || check.status !== 0) throw new Error(`Required command ${binary} is unavailable: ${check.stderr?.trim() || check.error?.message || `exit ${check.status}`}`);
     if (binary === 'rex') {
@@ -91,16 +91,15 @@ async function main() {
     throw new Error(`rex-pierre-diffs server did not become ready on ports 4179–4199. Log: ${logPath}\n${output.slice(-4000)}`);
   }
 
-  const args = ['run', `--split=${options.split}`, '--ratio', '50', '--label', 'rex-pierre-diffs', '--focus=false', '--keep-open', '-c', root];
+  const args = ['open', `http://127.0.0.1:${info.port}`, `--split=${options.split}`, '--ratio', '50', '--focus=false'];
   if (session) args.push('--session', session);
   if (block) args.push('--block', block);
-  const result = spawnSync('rex', [...args, '--', 'terminal-browser', 'open', `http://127.0.0.1:${info.port}`], {
+  const result = spawnSync('rexweb', args, {
     encoding: 'utf8',
-    env: { ...process.env, TERMINAL_BROWSER_NO_CHROME: '1' },
   });
   if (result.error || result.status !== 0) {
     const output = [result.stderr, result.stdout].filter(Boolean).join('\n').trim();
-    throw new Error(`Rex failed to open the viewer (exit ${result.status}). Check rex and terminal-browser; the server remains running at http://127.0.0.1:${info.port}. Log: ${logPath}${output ? `\n${output}` : ''}${result.error ? `\n${result.error.message}` : ''}`);
+    throw new Error(`RexWeb failed to open the viewer (exit ${result.status}). Run rexweb doctor; the server remains running at http://127.0.0.1:${info.port}. Log: ${logPath}${output ? `\n${output}` : ''}${result.error ? `\n${result.error.message}` : ''}`);
   }
 }
 
