@@ -27,11 +27,9 @@ button:disabled { opacity: .4; cursor: default; }
 button, a, summary { -webkit-tap-highlight-color: transparent; }
 svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
 .app-header { flex: none; min-height: 52px; display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); }
-.app-identity { display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.app-identity { display: flex; align-items: center; gap: 9px; flex: 1; white-space: nowrap; }
 .app-identity svg { width: 23px; height: 23px; color: #c4c4cc; }
 .app-identity b { font-size: 13px; font-weight: 600; letter-spacing: -.2px; }
-.repository { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; margin-left: 6px; padding-left: 16px; border-left: 1px solid #ffffff1a; color: #b1b1b9; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.repository small { color: var(--muted); font: 11px ui-monospace, SFMono-Regular, monospace; overflow: hidden; text-overflow: ellipsis; }
 .app-header select { flex-shrink: 0; font-size: 12px; background-color: #ffffff06; }
 .mobile-tabs { display: none; }
 main { display: grid; grid-template-columns: 248px minmax(0, 1fr); flex: 1; min-height: 0; }
@@ -106,7 +104,6 @@ body[data-density="compact"] .review-notes { padding-block: 6px; }
 @media (max-width: 800px) {
   .app-header { flex-wrap: wrap; padding: 8px 12px; gap: 8px; }
   .app-identity { flex: 1; }
-  .repository { display: none; }
   .mobile-tabs { display: flex; gap: 4px; }
   .mobile-tabs button { font-size: 12px; }
   main, main.sidebar-collapsed { display: flex; position: relative; }
@@ -129,3 +126,5 @@ body[data-density="compact"] .review-notes { padding-block: 6px; }
 }
 .mobile-tabs button { background: transparent; border-color: transparent; color: var(--muted); }
 .mobile-tabs button[aria-pressed="true"] { background: #ffffff0b; border-color: var(--border); color: #e3e3e5; }
+.copy-filename { display: inline-grid; place-items: center; width: 28px; min-height: 28px; margin-left: 4px; padding: 5px; border-color: transparent; background: transparent; color: var(--muted); vertical-align: middle; }
+.copy-filename svg { width: 14px; height: 14px; }
