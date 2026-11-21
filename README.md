@@ -1,4 +1,4 @@
-# <img src="docs/logo.svg" width="36" height="36" align="center" alt=""> Rex Pierre Diffs
+# ![Logo](docs/logo-small.png) Rex Pierre Diffs
 
 A graphical Git diff viewer for [Rex Terminal](https://www.superlogical.com/rex), powered by [Pierre Diffs](https://diffs.com/docs). Review changes, select lines, and send code context to a coding agent without leaving your terminal.
 
