@@ -30,6 +30,8 @@ try {
   await writeFile(join(root, 'review.ts'), 'export const value = 1;\n');
   await writeFile(join(root, 'binary.bin'), Buffer.from([0, 1]));
   await writeFile(join(root, 'empty.ts'), '');
+  await writeFile(join(root, 'package.json'), '{}');
+  await writeFile(join(root, 'unknown.xyzabc'), 'fallback');
   await Promise.all(Array.from({ length: 3000 }, (_, i) => writeFile(join(root, 'bulk', `file-${i}.ts`), '')));
   await run('git', ['init', '-q'], { cwd: root });
   await run('git', ['add', '.'], { cwd: root });
@@ -78,6 +80,9 @@ try {
   await wait(`${row('src/components/')} != null`);
   await evaluate(`${row('src/components/')}.click(); return true`);
   await wait(`${row('src/components/Button.tsx')} != null`);
+  await wait(`${row('src/components/Button.tsx')}?.querySelector('use')?.getAttribute('href') === '#material-react_ts'`);
+  assert.equal(await evaluate(`${tree}.querySelector('#material-react_ts image')?.getAttribute('href').startsWith('data:image/svg+xml,')`), true);
+
   await evaluate(`${row('src/components/Button.tsx')}.click(); return true`);
   await wait('document.querySelector(".source-content diffs-container")?.shadowRoot?.textContent.includes("Source preview") === true');
   assert.equal(await evaluate('document.querySelector(".source-content").hidden'), false);
@@ -97,6 +102,8 @@ try {
   await evaluate(`${row('empty.ts')}.click(); return true`);
   await wait('document.querySelector(".source-empty")?.textContent.includes("empty") === true');
   await showFiles();
+  assert.equal(await evaluate(`${row('package.json')}?.querySelector('use')?.getAttribute('href')`), '#material-nodejs');
+  assert.equal(await evaluate(`${row('unknown.xyzabc')}?.querySelector('use')?.getAttribute('href')`), '#material-file');
   await evaluate(`${row('bulk/')}.click(); return true`);
   await wait(`${row('bulk/file-0.ts')} != null`);
   assert.ok(await evaluate(`${tree}.querySelectorAll('[role=treeitem]').length < 100`), 'large tree must be virtualized');

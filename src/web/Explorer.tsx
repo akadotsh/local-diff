@@ -49,6 +49,15 @@ export function Explorer({ sidebar, token, active, onSelect }: { sidebar: HTMLEl
     const statuses: GitStatusEntry[] = Object.entries(listing.statuses).map(([path, code]) => ({ path, status: code === "??" ? "untracked" : code.includes("D") ? "deleted" : code.includes("R") ? "renamed" : code.includes("A") ? "added" : "modified" }));
     model.setGitStatus(statuses);
   }, [listing, model]);
+  const pathsKey = JSON.stringify(listing?.paths);
+  useEffect(() => {
+    if (!listing) return;
+    let cancelled = false;
+    void import("./materialIcons").then(({ materialIcons }) => materialIcons(listing.paths))
+      .then(icons => { if (!cancelled) model.setIcons(icons); })
+      .catch(() => { if (!cancelled) setError("Could not load Material file icons."); });
+    return () => { cancelled = true; };
+  }, [pathsKey, model]);
   useEffect(() => {
     if (!selected) return;
     const controller = new AbortController();
