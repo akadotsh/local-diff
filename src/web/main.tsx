@@ -15,6 +15,7 @@ import {
   type DiffSelection,
 } from "../shared/review";
 import "./style.css";
+import { Explorer } from "./Explorer";
 
 const token =
   document.querySelector<HTMLMetaElement>('meta[name="review-token"]')
@@ -32,6 +33,9 @@ type Selection = {
 };
 
 function App() {
+  const [sidebarMode, setSidebarMode] = useState<"changes" | "explorer">("changes");
+  const [explorerHost, setExplorerHost] = useState<HTMLDivElement | null>(null);
+  const [explorerOpened, setExplorerOpened] = useState(false);
   const [data, setData] = useState<any>();
   const [mode, setMode] = useState("all");
   const [search, setSearch] = useState("");
@@ -262,15 +266,20 @@ function App() {
                 <path d="M9 4v16" />
               </svg>
             </button>
-            <h3>
-              Changes <span className="file-count">{files.length}</span>
+            <nav className="sidebar-modes" aria-label="Sidebar view">
+              <button className="sidebar-mode-button" title="Changes" aria-label="Changes" aria-pressed={sidebarMode === "changes"} onClick={() => setSidebarMode("changes")}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3 4 7l4 4M4 7h12M16 21l4-4-4-4m4 4H8" /></svg></button>
+              <button className="sidebar-mode-button" title="Explorer" aria-label="Explorer" aria-pressed={sidebarMode === "explorer"} onClick={() => { setExplorerOpened(true); setSidebarMode("explorer"); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h10a2 2 0 0 1 2 2v12M4 7h8l4 4v10H4zM12 7v4h4" /></svg></button>
+            </nav>
+            <h3 hidden={sidebarMode !== "changes"}>
+              <span className="sr-only">Changes</span> <span className="file-count">{files.length}</span>
             </h3>
-            {(totals.added || totals.deleted) > 0 && (
+            {sidebarMode === "changes" && (totals.added || totals.deleted) > 0 && (
               <small className="change-totals">
                 <span>+{totals.added}</span> <span>−{totals.deleted}</span>
               </small>
             )}
           </div>
+          <div className="changes-sidebar" hidden={sidebarMode !== "changes"}>
           <input
             type="search"
             aria-label="Search files"
@@ -314,6 +323,8 @@ function App() {
             </div>
           ))}
           {search && visibleFiles.length === 0 && <p>No matching files.</p>}
+          </div>
+          <div className="explorer-host" ref={setExplorerHost} hidden={sidebarMode !== "explorer"} />
           <div className="sidebar-footer">
             <span className="connection-dot" aria-hidden="true" />
             <span>Local</span>
@@ -323,6 +334,7 @@ function App() {
           </div>
         </aside>
         <section
+          hidden={sidebarMode !== "changes"}
           className="diff-content"
           aria-label="Diff viewer"
           onScroll={(e) => {
@@ -498,6 +510,7 @@ function App() {
             </div>
           )}
         </section>
+        {explorerOpened && explorerHost && <Explorer sidebar={explorerHost} token={token} active={sidebarMode === "explorer"} onSelect={() => setMobileView("diff")} />}
       </main>
       {status && (
         <div className="status" role="status">

@@ -37,7 +37,7 @@ aside { display: flex; flex-direction: column; min-width: 0; padding: 12px; over
 .sidebar-heading { display: flex; align-items: center; gap: 8px; min-height: 32px; margin-bottom: 10px; }
 .sidebar-heading h3 { display: flex; align-items: center; gap: 8px; flex: 1; margin: 0; font-size: 12px; font-weight: 600; }
 .file-count { min-width: 20px; text-align: center; border-radius: 5px; padding: 0 5px; background: #ffffff09; color: #b7b7c0; font-size: 11px; font-variant-numeric: tabular-nums; }
-.sidebar-toggle { display: grid; place-items: center; flex: none; width: 28px; min-height: 28px; padding: 4px; background: transparent; border-color: transparent; color: #a5a5af; }
+.sidebar-toggle, .sidebar-mode-button { display: grid; place-items: center; flex: none; width: 28px; min-height: 28px; padding: 4px; background: transparent; border-color: transparent; color: #a5a5af; }
 aside input[type="search"] { width: 100%; min-width: 0; flex: none; min-height: 32px; padding: 6px 9px; margin-bottom: 12px; font-size: 12px; background: #16161866; }
 input::placeholder, textarea::placeholder { color: var(--muted); }
 .file-item { display: flex; align-items: center; gap: 4px; border-radius: 5px; flex-shrink: 0; }
@@ -166,3 +166,20 @@ body[data-density="compact"] .review-notes { padding-block: 6px; }
   .composer-destination { max-width: 100%; flex: 1 1 140px; }
   .ask-agent-button { margin-left: auto; }
 }
+
+[hidden] { display: none !important; }
+.sidebar-modes { display: flex; gap: 2px; }
+.sidebar-modes button[aria-pressed="true"] { color: #f0f0f3; background: #ffffff0b; }
+.changes-sidebar { flex: 1; min-height: 0; overflow: auto; }
+.explorer-host, .explorer-sidebar { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+.repository-tree { flex: 1; min-height: 0; }
+.explorer-sidebar p, .source-empty { color: var(--muted); padding: 0 12px; }
+.source-content { min-width: 0; overflow: auto; display: flex; flex-direction: column; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 800px) {
+  main > .source-content { display: none; width: 100%; }
+  main.mobile-diff > .source-content:not([hidden]) { display: flex; }
+}
+
+aside { overflow: hidden; }
+.sidebar-heading, .sidebar-footer { flex-shrink: 0; }
