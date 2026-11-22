@@ -8,11 +8,19 @@ import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { parseCliArgs } from './shared/cliArgs.js';
 import { startServer } from './server.js';
+import { installedVersion, upgrade } from './upgrade.js';
 
 async function main() {
+  const commandArgs = process.argv.slice(2);
+  if (commandArgs[0] === '--version' && commandArgs.length === 1) { console.log(installedVersion()); return; }
+  if (commandArgs[0] === 'upgrade') {
+    if (commandArgs.length > 2 || (commandArgs[1] !== undefined && commandArgs[1] !== '--check')) throw new Error('Usage: rpd upgrade [--check]');
+    await upgrade(commandArgs[1] === '--check');
+    return;
+  }
   const options = parseCliArgs(process.argv.slice(2), process.cwd());
   if (options.help) {
-    console.log('rex-pierre-diffs — review local Git changes inside Rex\n\nUsage: rex-pierre-diffs [--split right|left|above|below] [--cwd PATH] [--session ID] [--block ID]\n\nRun inside a Git repository in a Rex terminal. Requires macOS 14 or newer, Git, Rex, and rexweb. Requires Node.js only for npm installations.');
+    console.log('rex-pierre-diffs — review local Git changes inside Rex\n\nUsage: rex-pierre-diffs [--split right|left|above|below] [--cwd PATH] [--session ID] [--block ID]\n\nOther commands: rpd upgrade [--check], rpd --version\n\nRun inside a Git repository in a Rex terminal. Requires macOS 14 or newer, Git, Rex, and rexweb. Requires Node.js only for npm installations.');
     return;
   }
 
