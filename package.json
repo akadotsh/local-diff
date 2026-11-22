@@ -21,7 +21,9 @@
     "test:local": "npm run check && npm test && npm run test:explorer"
   },
   "dependencies": {
-    "chokidar": "^4.0.3"
+    "chokidar": "^4.0.3",
+    "dompurify": "^3.5.0",
+    "marked": "^18.2.1"
   },
   "devDependencies": {
     "@pierre/diffs": "^1.0.0",

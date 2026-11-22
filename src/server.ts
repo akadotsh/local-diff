@@ -162,6 +162,25 @@ export function createApp(root: string, token: string, reviewsPath = reviewFile(
   let listing: ReturnType<typeof repositoryFiles> | undefined;
   const handler = async (req: Request) => {
     const url = new URL(req.url);
+    if (url.pathname === '/api/file-asset' && req.method === 'GET') {
+      const host = new URL('http://' + (req.headers.get('host') || url.host)).hostname;
+      if (!['127.0.0.1', 'localhost', '[::1]'].includes(host) || (req.headers.get('x-review-token') !== token && url.searchParams.get('token') !== token)) return new Response('Forbidden', { status: 403 });
+      const files = await repositoryFiles(root).catch(() => null);
+      const path = url.searchParams.get('path') || '';
+      if (!files?.paths.includes(path)) return new Response('File not found', { status: 404 });
+      if (!/\.(png|jpe?g|gif|webp|avif|svg)$/i.test(path)) return new Response('Unsupported image', { status: 415 });
+      try {
+        const base = await realpath(root), target = await realpath(resolve(base, path));
+        if (!target.startsWith(base + sep) || target.slice(base.length + 1).split(sep).includes('.git')) return new Response('Forbidden', { status: 403 });
+        const info = await stat(target);
+        if (!info.isFile() || info.size > 5_000_000) return new Response('Image too large', { status: 413 });
+        const bytes = await readFile(target);
+        if (bytes.includes(0) && extname(path).toLowerCase() === '.svg') return new Response('Invalid SVG', { status: 415 });
+        const type = ({'.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.gif':'image/gif','.webp':'image/webp','.avif':'image/avif','.svg':'image/svg+xml'} as Record<string,string>)[extname(path).toLowerCase()];
+        if (type === 'image/svg+xml') return new Response(bytes.toString('utf8').replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, '').replace(/\s+on\w+\s*=\s*(["']).*?\1/gi, ''), {headers:{'content-type':type,'x-content-type-options':'nosniff','content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; sandbox"}});
+        return new Response(bytes, {headers:{'content-type':type,'x-content-type-options':'nosniff'}});
+      } catch { return new Response('File not found', { status:404 }); }
+    }
     if (url.pathname === '/api/files' || url.pathname === '/api/file') {
       if (req.method !== 'GET') return new Response('Method not allowed', { status: 405 });
       const host = new URL('http://' + (req.headers.get('host') || url.host)).hostname;
