@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { afterEach, beforeEach, describe, test } from 'node:test';
 import { spawnSync } from 'node:child_process';
-import { mkdtemp, realpath, rename, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, rename, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createApp, findRepository, getSnapshot, startServer } from '../src/server.js';
@@ -88,6 +88,13 @@ describe('Git integration', () => {
       await symlink(join(outside, 'secret.ts'), join(root, 'escape.ts'));
       assert.doesNotMatch((await getSnapshot(root)).patch, /local secret/);
     } finally { await rm(outside, { recursive: true, force: true }); }
+  });
+  test('skips untracked nested repositories instead of reading directories as files', async () => {
+    const nested = join(root, 'nested');
+    await mkdir(nested);
+    runGit(nested, 'init', '-q');
+    await writeFile(join(nested, 'file.ts'), 'nested source');
+    assert.equal((await getSnapshot(root)).patch, '');
   });
   test('keeps a large text diff bounded and complete', async () => {
     const content = Array.from({ length: 5000 }, (_, i) => `export const line${i} = ${i};`).join('\n') + '\n';
@@ -183,5 +190,67 @@ describe('HTTP API', () => {
       assert.equal(response.status, 200);
       assert.equal((await response.json() as { root: string }).root, root);
     } finally { await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())); }
+  });
+});
+
+describe('repository explorer', () => {
+  const headers = { 'x-review-token': 'test-token' };
+  const request = (path: string) => new Request('http://localhost' + path, { headers });
+  test('lists tracked, deleted, unusual and untracked paths while respecting ignores and status changes', async () => {
+    await writeFile(join(root, '.gitignore'), 'ignored/\nsecret.txt\n');
+    await writeFile(join(root, 'secret.txt'), 'secret');
+    await mkdir(join(root, 'ignored'));
+    await writeFile(join(root, 'ignored', 'generated.js'), 'ignored');
+    await writeFile(join(root, 'odd\nname.ts'), 'export {};');
+    await rm(join(root, 'del.txt'));
+    const app = createApp(root, 'test-token');
+    assert.equal((await app(new Request('http://localhost/api/files'))).status, 403);
+    assert.equal((await app(new Request('http://evil.example/api/files', { headers }))).status, 403);
+    const first = await (await app(request('/api/files'))).json() as { paths: string[]; statuses: Record<string, string> };
+    assert.ok(first.paths.includes('mod.txt'));
+    assert.ok(first.paths.includes('del.txt'));
+    assert.ok(first.paths.includes('odd\nname.ts'));
+    assert.ok(!first.paths.includes('secret.txt'));
+    assert.ok(!first.paths.some(path => path.startsWith('ignored/')));
+    assert.equal(first.statuses['odd\nname.ts'], '??');
+    assert.equal(first.statuses['del.txt'], ' D');
+    git('add', 'odd\nname.ts');
+    app.invalidateFiles();
+    const second = await (await app(request('/api/files'))).json() as typeof first;
+    assert.equal(second.statuses['odd\nname.ts'], 'A ');
+    await rename(join(root, 'odd\nname.ts'), join(root, 'renamed.ts'));
+    git('add', '-A');
+    app.invalidateFiles();
+    assert.ok((await (await app(request('/api/files'))).json() as typeof first).paths.includes('renamed.ts'));
+  });
+  test('previews full and empty source, reports deleted files and rejects ignored files', async () => {
+    await writeFile(join(root, 'empty.ts'), '');
+    const app = createApp(root, 'test-token');
+    assert.deepEqual(await (await app(request('/api/file?path=mod.txt'))).json(), { name: 'mod.txt', contents: 'before\n' });
+    assert.deepEqual(await (await app(request('/api/file?path=empty.ts'))).json(), { name: 'empty.ts', contents: '' });
+    await rm(join(root, 'del.txt'));
+    assert.equal((await app(request('/api/file?path=del.txt'))).status, 404);
+    assert.equal((await app(request('/api/file?path=.git/config'))).status, 404);
+  });
+  test('rejects traversal, absolute paths, external symlinks, binary and oversized files', async () => {
+    const app = createApp(root, 'test-token');
+    for (const path of ['../secret', '/etc/passwd', 'C:\\secret', 'a/../../secret']) {
+      assert.notEqual((await app(request('/api/file?path=' + encodeURIComponent(path)))).status, 200);
+    }
+    await symlink('/etc/passwd', join(root, 'escape'));
+    await writeFile(join(root, 'binary'), Buffer.from([0, 1, 2]));
+    await writeFile(join(root, 'invalid-utf8'), Buffer.from([255, 254]));
+    await writeFile(join(root, 'huge'), 'a'.repeat(1_000_001));
+    app.invalidateFiles();
+    assert.equal((await app(request('/api/file?path=escape'))).status, 403);
+    assert.equal((await app(request('/api/file?path=binary'))).status, 415);
+    assert.equal((await app(request('/api/file?path=invalid-utf8'))).status, 415);
+    assert.equal((await app(request('/api/file?path=huge'))).status, 413);
+  });
+  test('enumerates thousands of files without loading their contents', async () => {
+    await Promise.all(Array.from({ length: 3000 }, (_, index) => writeFile(join(root, `file-${index}.ts`), '')));
+    const app = createApp(root, 'test-token');
+    const result = await (await app(request('/api/files'))).json() as { paths: string[] };
+    assert.equal(result.paths.length, 3003);
   });
 });

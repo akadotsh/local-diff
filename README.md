@@ -35,6 +35,10 @@ rpd
 
 The viewer opens beside your terminal and shows the repository's current changes. Use **All changes**, **Working tree**, or **Staged** to choose what to review. Select changed lines to ask an agent a question. The agent picker lists recognized foreground coding-agent processes, excluding ordinary shells and browser panes. Agents hidden behind generic Node.js or Python wrapper processes may not be detected.
 
+Use the sidebar’s **Changes** and **Explorer** icon buttons to switch between Git review and the full repository tree. Explorer includes tracked files and non-ignored untracked files, with Git status badges. Select a file to read its current source; switching back restores your review context. Drag the sidebar’s right edge to resize it on desktop; its width is remembered. You can also focus the edge and use the arrow keys, or double-click to reset it. Browsing is read-only. Binary files, non-UTF-8 text, and files over 1 MB show a preview message. Git does not track empty directories.
+
+For the native RexWeb integration checks (including a 3,000-file fixture), run `npm run test:explorer` inside Rex. This opens and closes a temporary validation pane.
+
 For a top/bottom layout, run:
 
 ```sh
@@ -42,6 +46,30 @@ rpd --split below
 ```
 
 The `--split` option also accepts `right` (the default), `left`, and `above`. `rex-pierre-diffs` is the full command name; `rpd` is its shortcut. Run `rpd --help` for all CLI options. From a coding agent's shell command input in Rex, `rpd` works the same way when shell commands are enabled.
+
+## Test this checkout locally
+
+From this repository inside Rex, run:
+
+```sh
+npm run dev
+```
+
+This starts this checkout’s backend and Vite, opens native RexWeb, and hot reloads frontend changes. Restart the command after backend changes. Press `Ctrl+C` to stop both servers and close the preview.
+
+To test a production build instead:
+
+```sh
+npm run local
+```
+
+This builds the current source, starts a fresh server on an available port, and opens it in native RexWeb. It never reuses your globally installed `rpd` server. Keep the command running while testing; press `Ctrl+C` to stop it and close its preview. After changing source, stop it and run the same command again to rebuild.
+
+For all automated checks, including the native RexWeb integration tests:
+
+```sh
+npm run test:local
+```
 
 ### Optional Rex shortcut
 

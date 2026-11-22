@@ -1,10 +1,11 @@
-import { spawnSync } from 'node:child_process';
+import { execFile, spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { readFile, realpath, stat, unlink, writeFile } from 'node:fs/promises';
+import { constants } from 'node:fs';
+import { open, readFile, realpath, stat, unlink, writeFile } from 'node:fs/promises';
 import { createServer, type IncomingMessage, type Server as HttpServer, type ServerResponse } from 'node:http';
 import { tmpdir } from 'node:os';
 import type { AddressInfo } from 'node:net';
-import { dirname, extname, resolve, sep } from 'node:path';
+import { dirname, extname, isAbsolute, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Readable } from 'node:stream';
 import { watch } from 'chokidar';
@@ -41,7 +42,7 @@ async function addedFilePatch(root: string, file: string) {
     const filePath = await realpath(path);
     if (!filePath.startsWith(root + sep)) return '';
     const info = await stat(filePath);
-    if (info.size > 1_000_000) return '';
+    if (!info.isFile() || info.size > 1_000_000) return '';
     if ((await readFile(filePath)).includes(0)) return '';
     const result = command('git', ['diff', '--no-index', '--no-ext-diff', '--binary', '--', process.platform === 'win32' ? 'NUL' : '/dev/null', filePath], root);
     if (result.error || (result.status !== 0 && result.status !== 1)) throw new Error(result.stderr.trim() || result.error?.message || 'Could not read added file');
@@ -67,6 +68,62 @@ export async function getSnapshot(root: string, mode = 'all') {
   let extra = '';
   for (const file of untracked) extra += await addedFilePatch(root, file);
   return { app: 'rex-pierre-diffs', root, branch: git(root, ['branch', '--show-current']).trim(), patch: tracked + extra };
+}
+
+export async function repositoryFiles(root: string) {
+  const run = (args: string[]) => new Promise<string>((done, reject) => {
+    execFile('git', args, { cwd: root, env: { ...process.env, GIT_OPTIONAL_LOCKS: '0' }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }, (error, stdout) => error ? reject(error) : done(stdout));
+  });
+  const [listing, porcelain] = await Promise.all([
+    run(['ls-files', '--cached', '--others', '--exclude-standard', '-z']),
+    run(['status', '--porcelain=v1', '-z', '--untracked-files=all']),
+  ]);
+  const statuses: Record<string, string> = Object.create(null);
+  const records = porcelain.split('\0');
+  for (let i = 0; i < records.length; i++) {
+    const record = records[i];
+    if (!record) continue;
+    const code = record.slice(0, 2);
+    statuses[record.slice(3)] = code;
+    if (/[RC]/.test(code)) i++;
+  }
+  // Git has no empty directories; deleted tracked paths remain visible with their status.
+  return { paths: [...new Set(listing.split('\0').filter(path => path && !path.split('/').includes('.git')))], statuses };
+}
+
+export async function repositoryFile(root: string, path: string) {
+  if (!path || isAbsolute(path) || /^[a-z]:/i.test(path) || (process.platform === 'win32' && path.includes('\\')) || path.includes('\0') || path.split('/').some(part => part === '..' || part === '.' || part === '.git' || !part)) {
+    return Response.json({ error: 'Expected a repository-relative file path' }, { status: 400 });
+  }
+  try {
+    const base = await realpath(root);
+    const target = await realpath(resolve(base, path));
+    if (!target.startsWith(base + sep)) return Response.json({ error: 'File is outside the repository' }, { status: 403 });
+    if (target.slice(base.length + 1).split(sep).includes('.git')) return Response.json({ error: 'Git metadata cannot be previewed' }, { status: 403 });
+    const handle = await open(target, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
+    try {
+      const info = await handle.stat();
+      if (!info.isFile()) return Response.json({ error: 'Not a regular file' }, { status: 400 });
+      if (info.size > 1_000_000) return Response.json({ error: 'File is too large to preview (1 MB limit)' }, { status: 413 });
+      const bytes = Buffer.alloc(1_000_001);
+      let bytesRead = 0;
+      while (bytesRead < bytes.length) {
+        const chunk = await handle.read(bytes, bytesRead, bytes.length - bytesRead, bytesRead);
+        if (!chunk.bytesRead) break;
+        bytesRead += chunk.bytesRead;
+      }
+      if (bytesRead > 1_000_000) return Response.json({ error: 'File is too large to preview (1 MB limit)' }, { status: 413 });
+      const content = bytes.subarray(0, bytesRead);
+      if (content.includes(0)) return Response.json({ error: 'Binary files cannot be previewed' }, { status: 415 });
+      let contents: string;
+      try { contents = new TextDecoder('utf-8', { fatal: true }).decode(content); }
+      catch { return Response.json({ error: 'File is binary or is not UTF-8 text' }, { status: 415 }); }
+      return Response.json({ name: path, contents });
+    } finally { await handle.close(); }
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    return Response.json({ error: code === 'ENOENT' ? 'File no longer exists' : 'Could not read file' }, { status: code === 'ENOENT' ? 404 : 400 });
+  }
 }
 
 function agentPanes(session: string, rexCommand: (args: string[]) => CommandResult) {
@@ -102,8 +159,46 @@ function agentPanes(session: string, rexCommand: (args: string[]) => CommandResu
 
 export function createApp(root: string, token: string, reviewsPath = reviewFile(root), clients = new Set<ReviewClient>(), rexCommand = (args: string[]) => command('rex', args)) {
   const dist = process.env.RPD_DIST_DIR ? resolve(process.env.RPD_DIST_DIR) : resolve(dirname(fileURLToPath(import.meta.url)), '../dist');
-  return async (req: Request) => {
+  let listing: ReturnType<typeof repositoryFiles> | undefined;
+  const handler = async (req: Request) => {
     const url = new URL(req.url);
+    if (url.pathname === '/api/file-asset' && req.method === 'GET') {
+      const host = new URL('http://' + (req.headers.get('host') || url.host)).hostname;
+      if (!['127.0.0.1', 'localhost', '[::1]'].includes(host) || (req.headers.get('x-review-token') !== token && url.searchParams.get('token') !== token)) return new Response('Forbidden', { status: 403 });
+      const files = await repositoryFiles(root).catch(() => null);
+      const path = url.searchParams.get('path') || '';
+      if (!files?.paths.includes(path)) return new Response('File not found', { status: 404 });
+      if (!/\.(png|jpe?g|gif|webp|avif|svg)$/i.test(path)) return new Response('Unsupported image', { status: 415 });
+      try {
+        const base = await realpath(root), target = await realpath(resolve(base, path));
+        if (!target.startsWith(base + sep) || target.slice(base.length + 1).split(sep).includes('.git')) return new Response('Forbidden', { status: 403 });
+        const info = await stat(target);
+        if (!info.isFile() || info.size > 5_000_000) return new Response('Image too large', { status: 413 });
+        const bytes = await readFile(target);
+        if (bytes.includes(0) && extname(path).toLowerCase() === '.svg') return new Response('Invalid SVG', { status: 415 });
+        const type = ({'.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.gif':'image/gif','.webp':'image/webp','.avif':'image/avif','.svg':'image/svg+xml'} as Record<string,string>)[extname(path).toLowerCase()];
+        if (type === 'image/svg+xml') return new Response(bytes.toString('utf8').replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, '').replace(/\s+on\w+\s*=\s*(["']).*?\1/gi, ''), {headers:{'content-type':type,'x-content-type-options':'nosniff','content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; sandbox"}});
+        return new Response(bytes, {headers:{'content-type':type,'x-content-type-options':'nosniff'}});
+      } catch { return new Response('File not found', { status:404 }); }
+    }
+    if (url.pathname === '/api/files' || url.pathname === '/api/file') {
+      if (req.method !== 'GET') return new Response('Method not allowed', { status: 405 });
+      const host = new URL('http://' + (req.headers.get('host') || url.host)).hostname;
+      if (!['127.0.0.1', 'localhost', '[::1]'].includes(host)) return new Response('Forbidden host', { status: 403 });
+      if (req.headers.get('x-review-token') !== token) return new Response('Forbidden', { status: 403 });
+      if (!listing) {
+        const pending = repositoryFiles(root);
+        listing = pending;
+        pending.catch(() => { if (listing === pending) listing = undefined; });
+      }
+      try {
+        const files = await listing;
+        if (url.pathname === '/api/files') return Response.json(files);
+        const path = url.searchParams.get('path') || '';
+        if (!files.paths.includes(path)) return Response.json({ error: 'File is not in the repository listing' }, { status: 404 });
+        return repositoryFile(root, path);
+      } catch { return Response.json({ error: 'Could not list repository files' }, { status: 500 }); }
+    }
     if (url.pathname === '/events') return new Response(new ReadableStream<Uint8Array>({ start(c) { clients.add(c); c.enqueue(new TextEncoder().encode(': connected\n\n')); req.signal.addEventListener('abort', () => clients.delete(c), { once: true }); } }), { headers: { 'content-type': 'text/event-stream', 'cache-control': 'no-cache' } });
     if (url.pathname === '/api/diff' && req.method === 'GET') {
       try { return Response.json({ ...await getSnapshot(root, url.searchParams.get('mode') || 'all'), session: process.env.REX_SESSION || null }); }
@@ -156,6 +251,7 @@ export function createApp(root: string, token: string, reviewsPath = reviewFile(
     }
     return new Response('Not found', { status: 404 });
   };
+  return Object.assign(handler, { invalidateFiles: () => { listing = undefined; } });
 }
 
 async function toRequest(incoming: IncomingMessage, signal: AbortSignal) {
@@ -177,10 +273,10 @@ async function sendResponse(response: Response, outgoing: ServerResponse) {
   Readable.fromWeb(response.body as import('node:stream/web').ReadableStream).pipe(outgoing);
 }
 
-export async function startServer(root = findRepository(), port = Number(process.env.PORT) || 4179): Promise<HttpServer> {
+export async function startServer(root = findRepository(), port = Number(process.env.PORT) || 4179, token = randomUUID()): Promise<HttpServer> {
   const clients = new Set<ReviewClient>();
   let refreshTimer: ReturnType<typeof setTimeout> | undefined;
-  const app = createApp(root, randomUUID(), undefined, clients);
+  const app = createApp(root, token, undefined, clients);
   const server = createServer(async (incoming, outgoing) => {
     const abort = new AbortController();
     incoming.once('aborted', () => abort.abort());
@@ -193,7 +289,8 @@ export async function startServer(root = findRepository(), port = Number(process
     server.once('error', onError);
     server.listen(port, '127.0.0.1', () => { server.off('error', onError); resolveListen(); });
   });
-  const watcher = watch(root, { ignored: [/\/\.git\//, /\/node_modules\//], ignoreInitial: true }).on('all', () => {
+  const watcher = watch(root, { ignored: [/\/\.git\/(?:objects|logs)(?:\/|$)/, /\/\.git\/rex-pierre-diffs\.json$/, /\/node_modules(?:\/|$)/], ignoreInitial: true }).on('all', () => {
+    app.invalidateFiles();
     clearTimeout(refreshTimer);
     refreshTimer = setTimeout(() => { for (const client of clients) try { client.enqueue(new TextEncoder().encode('data: update\n\n')); } catch { clients.delete(client); } }, 250);
   });
