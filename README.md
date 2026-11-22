@@ -35,7 +35,7 @@ rpd upgrade --check
 rpd --version
 ```
 
-Upgrades support global npm and pnpm installations and use the detected installing manager. Checks and version output work from any directory. Development checkouts, npx, standalone installs, and ambiguous or conflicting PATH installations require manual handling. Manual upgrades: `npm install -g rex-pierre-diffs@latest` or `pnpm add -g rex-pierre-diffs@latest`. Use the manager that owns your installation; resolve PATH conflicts first. No sudo is used, and Rex Lua configuration is left untouched.
+`rpd upgrade` supports global npm and pnpm installations. To upgrade manually, run `npm install -g rex-pierre-diffs@latest` or `pnpm add -g rex-pierre-diffs@latest`, using the same package manager you installed with.
 
 ## Use
 
