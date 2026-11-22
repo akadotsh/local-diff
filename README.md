@@ -35,7 +35,7 @@ rpd
 
 The viewer opens beside your terminal and shows the repository's current changes. Use **All changes**, **Working tree**, or **Staged** to choose what to review. Select changed lines to ask an agent a question. The agent picker lists recognized foreground coding-agent processes, excluding ordinary shells and browser panes. Agents hidden behind generic Node.js or Python wrapper processes may not be detected.
 
-Use the sidebar’s **Changes** and **Explorer** icon buttons to switch between Git review and the full repository tree. Explorer includes tracked files and non-ignored untracked files, with Git status badges. Select a file to read its current source; switching back restores your review context. Browsing is read-only. Binary files, non-UTF-8 text, and files over 1 MB show a preview message. Git does not track empty directories.
+Use the sidebar’s **Changes** and **Explorer** icon buttons to switch between Git review and the full repository tree. Explorer includes tracked files and non-ignored untracked files, with Git status badges. Select a file to read its current source; switching back restores your review context. Drag the sidebar’s right edge to resize it on desktop; its width is remembered. You can also focus the edge and use the arrow keys, or double-click to reset it. Browsing is read-only. Binary files, non-UTF-8 text, and files over 1 MB show a preview message. Git does not track empty directories.
 
 For the native RexWeb integration checks (including a 3,000-file fixture), run `npm run test:explorer` inside Rex. This opens and closes a temporary validation pane.
 

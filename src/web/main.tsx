@@ -16,6 +16,7 @@ import {
 } from "../shared/review";
 import "./style.css";
 import { Explorer } from "./Explorer";
+import { SidebarResize } from "./SidebarResize";
 
 const token =
   document.querySelector<HTMLMetaElement>('meta[name="review-token"]')
@@ -333,6 +334,7 @@ function App() {
             </span>
           </div>
         </aside>
+        <SidebarResize />
         <section
           hidden={sidebarMode !== "changes"}
           className="diff-content"

@@ -46,6 +46,33 @@ try {
   await evaluate('const el = document.querySelector("article diffs-container").shadowRoot.querySelector("[data-gutter] [data-line-type=change-addition]"); el.dispatchEvent(new PointerEvent("pointerdown", {bubbles:true,composed:true,pointerType:"mouse",pointerId:1,button:0})); document.dispatchEvent(new PointerEvent("pointerup", {bubbles:true,composed:true,pointerType:"mouse",pointerId:1,button:0})); return true');
   await wait('document.querySelector(".inline-composer") != null');
   await evaluate('const input = document.querySelector(".inline-composer textarea"); const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value").set; setter.call(input, "Review question"); input.dispatchEvent(new Event("input", {bubbles:true})); return true');
+  const resized = await evaluate(`const separator = document.querySelector('[role=separator]');
+    separator.dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowRight',bubbles:true}));
+    await new Promise(resolve => setTimeout(resolve, 100));
+    return {width:Number(separator.getAttribute('aria-valuenow')), saved:Number(localStorage.getItem('rex-review-sidebar-width')), actual:document.querySelector('aside').getBoundingClientRect().width, desktop:innerWidth > 800, max:Math.max(200,Math.min(520,innerWidth / 2))};`);
+  assert.equal(resized.width, resized.saved);
+  assert.equal(resized.width, Math.round(Math.min(264, resized.max)));
+  if (resized.desktop) assert.equal(Math.round(resized.actual), resized.width);
+  assert.equal(await evaluate('window.originalDiff === document.querySelector("article diffs-container")'), true);
+  const dragged = await evaluate(`const separator = document.querySelector('[role=separator]');
+    const capture = separator.setPointerCapture;
+    const release = separator.releasePointerCapture;
+    // Synthetic pointers have no native capture session; exercise the React drag handlers.
+    separator.setPointerCapture = () => {};
+    separator.releasePointerCapture = () => separator.dispatchEvent(new PointerEvent('lostpointercapture', {bubbles:true,pointerId:1}));
+    separator.dispatchEvent(new PointerEvent('pointerdown', {bubbles:true,pointerId:1,button:0}));
+    separator.dispatchEvent(new PointerEvent('pointermove', {bubbles:true,pointerId:1,clientX:300}));
+    await new Promise(resolve => setTimeout(resolve, 100));
+    const width = Number(separator.getAttribute('aria-valuenow'));
+    separator.dispatchEvent(new PointerEvent('pointerup', {bubbles:true,pointerId:1}));
+    separator.setPointerCapture = capture;
+    separator.releasePointerCapture = release;
+    await new Promise(resolve => setTimeout(resolve, 100));
+    return {width,saved:Number(localStorage.getItem('rex-review-sidebar-width')),dragging:separator.dataset.dragging};`);
+  assert.equal(dragged.width, Math.round(Math.min(300, resized.max)));
+  assert.equal(dragged.width, dragged.saved);
+  assert.equal(dragged.dragging, 'false');
+
   await switchTo('Explorer');
   await showFiles();
   await wait(`${row('src/components/')} != null`);
@@ -80,7 +107,11 @@ try {
   await switchTo('Changes');
   await wait('document.querySelectorAll("article").length === 2');
   assert.equal(await evaluate('document.querySelector(".app-error") == null'), true);
-  console.log('PASS: RexWeb switching, source preview, selection/expansion preservation, preview errors, empty files, 3,000-file virtualization, and live Git updates.');
+  await run('rexweb', ['reload', '-b', pane]);
+  await wait(`Number(document.querySelector('[role=separator]')?.getAttribute('aria-valuenow')) === ${dragged.saved}`);
+  await evaluate(`document.querySelector('[role=separator]').dispatchEvent(new MouseEvent('dblclick', {bubbles:true})); return true`);
+  await wait(`Number(document.querySelector('[role=separator]')?.getAttribute('aria-valuenow')) === ${Math.round(Math.min(248, resized.max))}`);
+  console.log('PASS: sidebar drag/keyboard resizing and width persistence, RexWeb switching, source preview, selection/expansion preservation, preview errors, empty files, 3,000-file virtualization, and live Git updates.');
 } finally {
   if (pane) await run('rexweb', ['close', '-b', pane]);
   if (server) { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }
