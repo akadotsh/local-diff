@@ -193,7 +193,7 @@ function App() {
   }
   return (
     <>
-      <header className="app-header">
+      <header className={`app-header ${sidebarMode === "explorer" ? "explorer-mode" : ""}`}>
         <div className="app-identity">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <rect x="3" y="3" width="18" height="18" rx="5" />

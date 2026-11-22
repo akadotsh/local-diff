@@ -190,3 +190,5 @@ aside { overflow: hidden; }
 main:has(.sidebar-resize[data-dragging="true"]) { cursor: col-resize; user-select: none; }
 main.sidebar-collapsed > .sidebar-resize { display: none; }
 @media (max-width: 800px) { .sidebar-resize { display: none; } }
+
+.app-header.explorer-mode > select { display: none; }
