@@ -32,6 +32,8 @@ type Selection = {
   range: DiffSelection;
   context: ReturnType<typeof selectionContext>;
 };
+type ThemePreference = "system" | "light" | "dark";
+type ThemeMode = Exclude<ThemePreference, "system">;
 
 function App() {
   const [sidebarMode, setSidebarMode] = useState<"changes" | "explorer">("changes");
@@ -57,6 +59,19 @@ function App() {
         "comfortable" | "compact") || "comfortable",
   );
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarSide, setSidebarSide] = useState<"left" | "right">(
+    () => localStorage.getItem("rex-review-sidebar-side") === "right" ? "right" : "left",
+  );
+  const [sidebarSettingsOpen, setSidebarSettingsOpen] = useState(false);
+  const [themePreference, setThemePreference] = useState<ThemePreference>(() => {
+    const saved = localStorage.getItem("rex-review-theme");
+    return saved === "system" || saved === "light" || saved === "dark" ? saved : "dark";
+  });
+  const [systemTheme, setSystemTheme] = useState<ThemeMode>(() =>
+    matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark",
+  );
+  const effectiveTheme: ThemeMode = themePreference === "system" ? systemTheme : themePreference;
+  const sidebarSettingsDialogRef = useRef<HTMLDialogElement>(null);
   const layoutRef = useRef<HTMLElement>(null);
   const previousDiffX = useRef<number | null>(null);
   useLayoutEffect(() => {
@@ -82,6 +97,25 @@ function App() {
     document.body.dataset.density = density;
     localStorage.setItem("rex-review-density", density);
   }, [density]);
+  useEffect(() => {
+    localStorage.setItem("rex-review-sidebar-side", sidebarSide);
+  }, [sidebarSide]);
+  useEffect(() => {
+    const preference = matchMedia("(prefers-color-scheme: light)");
+    const update = () => setSystemTheme(preference.matches ? "light" : "dark");
+    preference.addEventListener("change", update);
+    return () => preference.removeEventListener("change", update);
+  }, []);
+  useLayoutEffect(() => {
+    document.documentElement.dataset.theme = effectiveTheme;
+    document.documentElement.style.colorScheme = effectiveTheme;
+    localStorage.setItem("rex-review-theme", themePreference);
+  }, [effectiveTheme, themePreference]);
+  useEffect(() => {
+    const dialog = sidebarSettingsDialogRef.current;
+    if (sidebarSettingsOpen && dialog && !dialog.open) dialog.showModal();
+    else if (!sidebarSettingsOpen && dialog?.open) dialog.close();
+  }, [sidebarSettingsOpen]);
   const load = () =>
     fetch("/api/diff?mode=" + mode)
       .then((r) => r.json())
@@ -160,16 +194,16 @@ function App() {
     lineNumber: selection.range.end,
   }] : NO_ANNOTATIONS, [selection]);
   const diffOptions = useMemo(() => files.map(patch => ({
-    unsafeCSS: ":host { --diffs-bg: #19191b; }",
-    theme: "pierre-dark",
-    themeType: "dark" as const,
+    unsafeCSS: `:host { --diffs-bg: ${effectiveTheme === "light" ? "#ffffff" : "#19191b"}; }`,
+    theme: effectiveTheme === "light" ? "pierre-light" : "pierre-dark",
+    themeType: effectiveTheme,
     diffStyle: "unified" as const,
     overflow: "wrap" as const,
     expandUnchanged: false,
     collapsedContextThreshold: 2,
     enableLineSelection: true,
     onLineSelectionEnd: (range: DiffSelection | null) => choose(range, patch),
-  })), [files, choose]);
+  })), [files, choose, effectiveTheme]);
   async function send() {
     if (!selection || !targets.some(t => t.id === target)) return;
     setStatus("Sending…");
@@ -236,10 +270,22 @@ function App() {
           <option value="comfortable">Comfortable</option>
           <option value="compact">Compact</option>
         </select>
+        <button
+          className="popout-button"
+          title="Open review in a separate window"
+          aria-label="Open review in a separate window"
+          onClick={() => window.open(window.location.href, "_blank", "popup,width=1440,height=900,noopener,noreferrer")}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14 3h7v7" />
+            <path d="M10 14 21 3" />
+            <path d="M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6" />
+          </svg>
+        </button>
       </header>
       <main
         ref={layoutRef}
-        className={`mobile-${mobileView} ${sidebarOpen ? "" : "sidebar-collapsed"}`}
+        className={`mobile-${mobileView} sidebar-${sidebarSide} ${sidebarOpen ? "" : "sidebar-collapsed"}`}
       >
         <aside>
           <div className="sidebar-heading">
@@ -332,6 +378,20 @@ function App() {
             <span className="footer-branch" title={data?.branch}>
               {data?.branch}
             </span>
+            <div className="sidebar-settings">
+              <button
+                className="sidebar-settings-trigger"
+                aria-label="Sidebar settings"
+                title="Sidebar settings"
+                aria-expanded={sidebarSettingsOpen}
+                onClick={() => setSidebarSettingsOpen(open => !open)}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2 2-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-2.8v-.2a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1-2-2 .1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.5v-2.8h.2a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 2-2 .1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6v-.2h2.8v.2a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 2 2-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2V14h-.2a1.7 1.7 0 0 0-1.6 1z" />
+                </svg>
+              </button>
+            </div>
           </div>
         </aside>
         <SidebarResize />
@@ -512,8 +572,85 @@ function App() {
             </div>
           )}
         </section>
-        {explorerOpened && explorerHost && <Explorer sidebar={explorerHost} token={token} active={sidebarMode === "explorer"} onSelect={() => setMobileView("diff")} />}
+        {explorerOpened && explorerHost && <Explorer sidebar={explorerHost} token={token} active={sidebarMode === "explorer"} theme={effectiveTheme} onSelect={() => setMobileView("diff")} />}
       </main>
+      <dialog
+        ref={sidebarSettingsDialogRef}
+        className="settings-dialog"
+        aria-labelledby="settings-title"
+        onClose={() => setSidebarSettingsOpen(false)}
+        onClick={event => {
+          if (event.target === event.currentTarget) setSidebarSettingsOpen(false);
+        }}
+      >
+        <header className="settings-dialog-header">
+          <div>
+            <h2 id="settings-title">Settings</h2>
+            <p>Review workspace preferences</p>
+          </div>
+          <button className="settings-close" aria-label="Close settings" onClick={() => setSidebarSettingsOpen(false)}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+        <div className="settings-dialog-body">
+          <nav className="settings-nav" aria-label="Settings sections">
+            <button className="settings-nav-item selected" aria-current="page">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" /></svg>
+              Appearance
+            </button>
+          </nav>
+          <section className="settings-content" aria-label="Appearance settings">
+            <section className="appearance-setting" aria-labelledby="settings-sidebar-title">
+              <h4 id="settings-sidebar-title">Sidebar</h4>
+              <p>Choose where the review sidebar appears.</p>
+              <div className="layout-choices" role="radiogroup" aria-label="Sidebar position">
+                {(["left", "right"] as const).map(side => (
+                  <label className={`layout-choice${sidebarSide === side ? " selected" : ""}`} key={side}>
+                    <input
+                      type="radio"
+                      name="sidebar-position"
+                      value={side}
+                      checked={sidebarSide === side}
+                      onChange={() => setSidebarSide(side)}
+                    />
+                    <span className="layout-choice-heading">
+                      <span className="layout-choice-label">Sidebar on the {side}</span>
+                      <span className="layout-choice-radio" aria-hidden="true">
+                        {sidebarSide === side && <svg viewBox="0 0 20 20"><path d="m4 10 4 4 8-8" /></svg>}
+                      </span>
+                    </span>
+                    <span className={`layout-preview layout-preview-${side}`} aria-hidden="true">
+                      <span className="layout-preview-chrome"><i /><i /><i /></span>
+                      <span className="layout-preview-sidebar"><i /><i /><i /><i /></span>
+                      <span className="layout-preview-main">
+                        <i /><i /><i /><i /><i /><i />
+                      </span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </section>
+            <section className="appearance-setting" aria-labelledby="settings-theme-title">
+              <h4 id="settings-theme-title">Theme</h4>
+              <p>Choose the color theme for the review workspace.</p>
+              <div className="theme-choices" role="radiogroup" aria-label="Color theme">
+                {(["system", "light", "dark"] as const).map(theme => (
+                  <label className={`theme-choice${themePreference === theme ? " selected" : ""}`} key={theme}>
+                    <input type="radio" name="color-theme" value={theme} checked={themePreference === theme} onChange={() => setThemePreference(theme)} />
+                    <span className={`theme-swatch theme-swatch-${theme}`} aria-hidden="true"><i /><i /></span>
+                    <span className="layout-choice-heading">
+                      <span className="theme-choice-label">{theme[0].toUpperCase() + theme.slice(1)}</span>
+                      <span className="layout-choice-radio" aria-hidden="true">
+                        {themePreference === theme && <svg viewBox="0 0 20 20"><path d="m4 10 4 4 8-8" /></svg>}
+                      </span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </section>
+          </section>
+        </div>
+      </dialog>
       {status && (
         <div className="status" role="status">
           {status}

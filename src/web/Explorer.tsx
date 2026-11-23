@@ -8,8 +8,13 @@ import { prepareFileTreeInput, type GitStatusEntry } from "@pierre/trees";
 import { FileTree, useFileTree } from "@pierre/trees/react";
 
 type Listing = { paths: string[]; statuses: Record<string, string> };
-const options = { theme: "pierre-dark", themeType: "dark" as const, overflow: "scroll" as const, unsafeCSS: ":host { --diffs-bg: #19191b; }" };
-export function Explorer({ sidebar, token, active, onSelect }: { sidebar: HTMLElement; token: string; active: boolean; onSelect: () => void }) {
+const fileOptions = (theme: "dark" | "light") => ({
+  theme: theme === "light" ? "pierre-light" : "pierre-dark",
+  themeType: theme,
+  overflow: "scroll" as const,
+  unsafeCSS: `:host { --diffs-bg: ${theme === "light" ? "#ffffff" : "#19191b"}; }`,
+});
+export function Explorer({ sidebar, token, active, theme, onSelect }: { sidebar: HTMLElement; token: string; active: boolean; theme: "dark" | "light"; onSelect: () => void }) {
   const [listing, setListing] = useState<Listing>();
   const [error, setError] = useState("");
   const [selected, setSelected] = useState<string>();
@@ -29,7 +34,7 @@ export function Explorer({ sidebar, token, active, onSelect }: { sidebar: HTMLEl
   });
   const { model } = useFileTree({ paths: [], icons: { set: "standard", colored: false }, initialExpansion: "closed", renaming: false, dragAndDrop: false,
     onSelectionChange: paths => { const path = paths[paths.length - 1]; if (path && model.getItem(path)?.isDirectory() === false) { setSelected(path); onSelect(); } },
-    unsafeCSS: ":host { color-scheme: dark; --trees-theme-sidebar-bg: #202022; --trees-theme-sidebar-fg: #bdbdc6; --trees-theme-list-active-selection-bg: #ffffff0b; --trees-theme-list-active-selection-fg: #f0f0f3; --trees-theme-list-hover-bg: #ffffff08; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }",
+    unsafeCSS: ":host { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }",
   });
   const previousPaths = useRef("");
   useEffect(() => {
@@ -108,7 +113,19 @@ export function Explorer({ sidebar, token, active, onSelect }: { sidebar: HTMLEl
       {error && <p role="alert">{error}</p>}
       {!listing && !error && <p role="status">Loading repository…</p>}
       {listing?.paths.length === 0 && <p>No repository files.</p>}
-      <FileTree model={model} className="repository-tree" aria-label="Repository files" />
+      <FileTree
+        model={model}
+        className="repository-tree"
+        aria-label="Repository files"
+        style={{
+          colorScheme: theme,
+          "--trees-theme-sidebar-bg": theme === "light" ? "#ffffff" : "#202022",
+          "--trees-theme-sidebar-fg": theme === "light" ? "#4b4b52" : "#bdbdc6",
+          "--trees-theme-list-active-selection-bg": theme === "light" ? "#18181b0d" : "#ffffff0b",
+          "--trees-theme-list-active-selection-fg": theme === "light" ? "#222225" : "#f0f0f3",
+          "--trees-theme-list-hover-bg": theme === "light" ? "#18181b08" : "#ffffff08",
+        } as React.CSSProperties}
+      />
     </div>, sidebar)}
     <section className="source-content" aria-label="File preview" hidden={!active}>
       {!selected ? <div className="empty-state"><h1>Explore your repository</h1><p>Select a file to read its source.</p></div>
@@ -116,7 +133,7 @@ export function Explorer({ sidebar, token, active, onSelect }: { sidebar: HTMLEl
         : previewError ? <div className="empty-state" role="alert"><h1>Could not preview file</h1><p>{previewError}</p></div>
         : !displayed ? <div className="empty-state" role="status">Loading {selected}…</div>
         : markdown && markdownPreview ? <><div className="markdown-preview-toolbar"><span>{selected}</span><button onClick={() => setMarkdownPreview(false)}>Source</button></div><article className="markdown-preview" dangerouslySetInnerHTML={{__html:DOMPurify.sanitize(marked.parse(displayed.contents) as string)}} /></>
-        : <><div className="source-toolbar">{markdown && <button onClick={() => setMarkdownPreview(true)}>Preview</button>}</div><File file={displayed} options={{...options, enableLineSelection:true, onLineSelectionEnd:setSelectedLines}} selectedLines={selectedLines} lineAnnotations={annotations} renderAnnotation={(annotation: LineAnnotation) => annotation.lineNumber === selectedLines?.end ? <div className="inline-composer" role="region" aria-label="Ask Agent about selected lines"><div className="composer-heading"><strong>Ask Agent · {selectedLines.start}{selectedLines.end !== selectedLines.start ? `–${selectedLines.end}` : ""}</strong><button className="composer-close" aria-label="Close composer" onClick={() => setSelectedLines(null)}>×</button></div><textarea aria-label="Question for agent" value={question} onChange={event => setQuestion(event.target.value)} placeholder="Ask about these lines…" rows={3}/><div className="composer-actions"><select aria-label="Target Rex pane" value={target} onChange={event => setTarget(event.target.value)}><option value="">{targets.length ? "Choose agent pane…" : "No recognized agent panes"}</option>{targets.map(agent => <option key={agent.id} value={agent.id}>{agent.agent} · {agent.id.slice(-6)}</option>)}</select><button className="ask-agent-button" disabled={!targets.some(agent => agent.id === target)} onClick={() => void sendToAgent()}>Ask Agent</button></div>{messageStatus && <small>{messageStatus}</small>}</div> : null} />{!displayed.contents && <p className="source-empty">This file is empty.</p>}</>}
+        : <><div className="source-toolbar">{markdown && <button onClick={() => setMarkdownPreview(true)}>Preview</button>}</div><File file={displayed} options={{...fileOptions(theme), enableLineSelection:true, onLineSelectionEnd:setSelectedLines}} selectedLines={selectedLines} lineAnnotations={annotations} renderAnnotation={(annotation: LineAnnotation) => annotation.lineNumber === selectedLines?.end ? <div className="inline-composer" role="region" aria-label="Ask Agent about selected lines"><div className="composer-heading"><strong>Ask Agent · {selectedLines.start}{selectedLines.end !== selectedLines.start ? `–${selectedLines.end}` : ""}</strong><button className="composer-close" aria-label="Close composer" onClick={() => setSelectedLines(null)}>×</button></div><textarea aria-label="Question for agent" value={question} onChange={event => setQuestion(event.target.value)} placeholder="Ask about these lines…" rows={3}/><div className="composer-actions"><select aria-label="Target Rex pane" value={target} onChange={event => setTarget(event.target.value)}><option value="">{targets.length ? "Choose agent pane…" : "No recognized agent panes"}</option>{targets.map(agent => <option key={agent.id} value={agent.id}>{agent.agent} · {agent.id.slice(-6)}</option>)}</select><button className="ask-agent-button" disabled={!targets.some(agent => agent.id === target)} onClick={() => void sendToAgent()}>Ask Agent</button></div>{messageStatus && <small>{messageStatus}</small>}</div> : null} />{!displayed.contents && <p className="source-empty">This file is empty.</p>}</>}
 
     </section>
   </>;

@@ -40,7 +40,9 @@ export function SidebarResize() {
     }}
     onPointerMove={event => {
       if (pointer.current !== event.pointerId) return;
-      resize(event.clientX - event.currentTarget.parentElement!.getBoundingClientRect().left);
+      const layout = event.currentTarget.parentElement!;
+      const bounds = layout.getBoundingClientRect();
+      resize(layout.classList.contains("sidebar-right") ? bounds.right - event.clientX : event.clientX - bounds.left);
     }}
     onPointerUp={event => {
       if (pointer.current === event.pointerId) event.currentTarget.releasePointerCapture(event.pointerId);
@@ -52,7 +54,13 @@ export function SidebarResize() {
     }}
     onDoubleClick={() => resize(248, true)}
     onKeyDown={event => {
-      const next = { ArrowLeft: width - 16, ArrowRight: width + 16, Home: 200, End: 520 }[event.key];
+      const right = handle.current?.parentElement?.classList.contains("sidebar-right");
+      const next = {
+        ArrowLeft: width + (right ? 16 : -16),
+        ArrowRight: width + (right ? -16 : 16),
+        Home: 200,
+        End: 520,
+      }[event.key];
       if (next === undefined) return;
       event.preventDefault();
       resize(next, true);
