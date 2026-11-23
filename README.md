@@ -20,10 +20,22 @@ A graphical Git diff viewer for [Rex Terminal](https://www.superlogical.com/rex)
 You need macOS 14 or newer, Node.js 20 or newer, Git, Rex Terminal, and [`rexweb`](https://github.com/acoyfellow/rexweb). Follow rexweb's installation instructions first, ensure `rexweb` is on your PATH, and run `rexweb doctor` to check the setup. Then install this package globally with npm or pnpm:
 
 ```sh
-npm install --global rex-pierre-diffs
+# Install
+npm install -g rex-pierre-diffs
 # or
-pnpm add --global rex-pierre-diffs
+pnpm add -g rex-pierre-diffs
+
+# Upgrade
+rpd upgrade
+
+# Check for updates
+rpd upgrade --check
+
+# Show installed version
+rpd --version
 ```
+
+`rpd upgrade` supports global npm and pnpm installations. To upgrade manually, run `npm install -g rex-pierre-diffs@latest` or `pnpm add -g rex-pierre-diffs@latest`, using the same package manager you installed with.
 
 ## Use
 
