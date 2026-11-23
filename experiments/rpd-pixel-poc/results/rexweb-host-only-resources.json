@@ -1,0 +1,425 @@
+{
+  "note": "ps CPU is a decaying average, not interval CPU; summed RSS double-counts shared pages. Descendant tree only, excludes terminal host.",
+  "samples": [
+    {
+      "at": 1795419228280,
+      "cpuPercent": 1.6,
+      "rssKiB": 128720,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 1.6,
+          "rssKiB": 97952,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30768,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419228593,
+      "cpuPercent": 2.2,
+      "rssKiB": 128720,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 2.2,
+          "rssKiB": 97952,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30768,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419228897,
+      "cpuPercent": 4.3,
+      "rssKiB": 128720,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 4.3,
+          "rssKiB": 97952,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30768,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419229172,
+      "cpuPercent": 5.2,
+      "rssKiB": 128720,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.2,
+          "rssKiB": 97952,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30768,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419229474,
+      "cpuPercent": 5.6,
+      "rssKiB": 128720,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.5,
+          "rssKiB": 97952,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0.1,
+          "rssKiB": 30768,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419229771,
+      "cpuPercent": 6.199999999999999,
+      "rssKiB": 128720,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 6.1,
+          "rssKiB": 97952,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0.1,
+          "rssKiB": 30768,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419230076,
+      "cpuPercent": 5.8999999999999995,
+      "rssKiB": 128720,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.8,
+          "rssKiB": 97952,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0.1,
+          "rssKiB": 30768,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419230385,
+      "cpuPercent": 5.3999999999999995,
+      "rssKiB": 128720,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.3,
+          "rssKiB": 97952,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0.1,
+          "rssKiB": 30768,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419230691,
+      "cpuPercent": 5.1,
+      "rssKiB": 128736,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.1,
+          "rssKiB": 97952,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30784,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419230998,
+      "cpuPercent": 5.3999999999999995,
+      "rssKiB": 128736,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.3,
+          "rssKiB": 97952,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0.1,
+          "rssKiB": 30784,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419231308,
+      "cpuPercent": 5.6,
+      "rssKiB": 128736,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.6,
+          "rssKiB": 97952,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30784,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419231613,
+      "cpuPercent": 5.4,
+      "rssKiB": 128688,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.4,
+          "rssKiB": 97904,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30784,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419231920,
+      "cpuPercent": 5.8,
+      "rssKiB": 128688,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.6,
+          "rssKiB": 97904,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0.2,
+          "rssKiB": 30784,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419232228,
+      "cpuPercent": 5.4,
+      "rssKiB": 128688,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.4,
+          "rssKiB": 97904,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30784,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419232533,
+      "cpuPercent": 5.3,
+      "rssKiB": 128688,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.3,
+          "rssKiB": 97904,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30784,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419232840,
+      "cpuPercent": 5.6,
+      "rssKiB": 128688,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.6,
+          "rssKiB": 97904,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30784,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419233149,
+      "cpuPercent": 5.8,
+      "rssKiB": 128688,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.8,
+          "rssKiB": 97904,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30784,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419233456,
+      "cpuPercent": 5.7,
+      "rssKiB": 128688,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.7,
+          "rssKiB": 97904,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30784,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419233759,
+      "cpuPercent": 5.8,
+      "rssKiB": 128688,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.7,
+          "rssKiB": 97904,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0.1,
+          "rssKiB": 30784,
+          "name": "rex"
+        }
+      ]
+    },
+    {
+      "at": 1795419234065,
+      "cpuPercent": 5.9,
+      "rssKiB": 128688,
+      "processes": [
+        {
+          "pid": 42663,
+          "ppid": 1,
+          "cpuPercent": 5.9,
+          "rssKiB": 97904,
+          "name": "RexWeb"
+        },
+        {
+          "pid": 42684,
+          "ppid": 42663,
+          "cpuPercent": 0,
+          "rssKiB": 30784,
+          "name": "rex"
+        }
+      ]
+    }
+  ]
+}

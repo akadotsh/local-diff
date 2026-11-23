@@ -1,0 +1,145 @@
+{
+  "note": "CDP viewport emulation to two browser animation callbacks; includes RPC overhead, excludes terminal resize and display presentation.",
+  "samples": [
+    {
+      "commandToTwoRafMs": 538.755459,
+      "viewport": {
+        "width": 1055,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 413.29404200000135,
+      "viewport": {
+        "width": 1155,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 422.8125420000033,
+      "viewport": {
+        "width": 1055,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 458.2565419999992,
+      "viewport": {
+        "width": 1155,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 416.7017089999972,
+      "viewport": {
+        "width": 1055,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 433.30425000000105,
+      "viewport": {
+        "width": 1155,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 667.3671670000003,
+      "viewport": {
+        "width": 1055,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 433.3525000000009,
+      "viewport": {
+        "width": 1155,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 412.544332999998,
+      "viewport": {
+        "width": 1055,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 460.55733300000065,
+      "viewport": {
+        "width": 1155,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 412.23349999999846,
+      "viewport": {
+        "width": 1055,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 414.00087500000154,
+      "viewport": {
+        "width": 1155,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 458.29904199999874,
+      "viewport": {
+        "width": 1055,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 416.5509170000005,
+      "viewport": {
+        "width": 1155,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 616.4860000000008,
+      "viewport": {
+        "width": 1055,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 429.77445799999987,
+      "viewport": {
+        "width": 1155,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 417.0381249999991,
+      "viewport": {
+        "width": 1055,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 466.51500000000306,
+      "viewport": {
+        "width": 1155,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 411.0326249999998,
+      "viewport": {
+        "width": 1055,
+        "height": 1344
+      }
+    },
+    {
+      "commandToTwoRafMs": 414.22537499999817,
+      "viewport": {
+        "width": 1155,
+        "height": 1344
+      }
+    }
+  ]
+}

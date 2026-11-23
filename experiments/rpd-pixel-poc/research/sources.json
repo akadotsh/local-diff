@@ -1,0 +1,16 @@
+{
+  "retrieved": "2026-11-23",
+  "pixel": "0.3.2",
+  "pixelTarballSha1": "b3d99b7b027911bb55e6bc25fc08e7a8c53237d0",
+  "terminalBrowserSource": "3e5be01bd94e91755370b2bdcddc96317d853a77",
+  "terminalCodeSource": "8c727a82596b70d27f4b2be5fced4efa330190ec",
+  "rpdCommit": "d4551e9ab934fbdcda261270d57cd425bf24b0c6",
+  "rpdIndexSha256": "6dec8032b88088c9eb904348897fb610d423a0764caba2ca1e751388fa4d626f",
+  "installedTerminalBrowser": "0.15.3",
+  "sources": [
+    "https://pixelgui.com/",
+    "https://github.com/zenbu-labs/terminal-browser/tree/3e5be01bd94e91755370b2bdcddc96317d853a77/pixel",
+    "https://github.com/zenbu-labs/terminal-code/tree/8c727a82596b70d27f4b2be5fced4efa330190ec",
+    "https://github.com/akadotsh/rex-pierre-diffs/tree/d4551e9ab934fbdcda261270d57cd425bf24b0c6"
+  ]
+}

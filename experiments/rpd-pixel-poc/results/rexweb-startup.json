@@ -1,0 +1,4 @@
+{
+  "openToDocumentRpcMs": 738.283584,
+  "note": "Warm shared RexWeb app; open waits for document load, not diff readiness or presentation."
+}

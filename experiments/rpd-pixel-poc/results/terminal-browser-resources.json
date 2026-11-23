@@ -1,0 +1,845 @@
+{
+  "note": "ps CPU is a decaying average, not interval CPU; summed RSS double-counts shared pages. Descendant tree only, excludes terminal host.",
+  "samples": [
+    {
+      "at": 1795419299318,
+      "cpuPercent": 105.1,
+      "rssKiB": 4312960,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 2.7,
+          "rssKiB": 202448,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 1.9,
+          "rssKiB": 87136,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28160,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 100.5,
+          "rssKiB": 3947040,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419299594,
+      "cpuPercent": 172.5,
+      "rssKiB": 4220672,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0.9,
+          "rssKiB": 202448,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 1,
+          "rssKiB": 87136,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28160,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 170.6,
+          "rssKiB": 3854752,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419299872,
+      "cpuPercent": 135.4,
+      "rssKiB": 4228784,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0.3,
+          "rssKiB": 202448,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0.5,
+          "rssKiB": 87136,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28160,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 134.6,
+          "rssKiB": 3862864,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419300148,
+      "cpuPercent": 163.9,
+      "rssKiB": 4103680,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0.5,
+          "rssKiB": 202448,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0.8,
+          "rssKiB": 87184,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28160,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 162.6,
+          "rssKiB": 3737712,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419300449,
+      "cpuPercent": 62.3,
+      "rssKiB": 4103680,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0.1,
+          "rssKiB": 202448,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0.2,
+          "rssKiB": 87184,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28160,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 62,
+          "rssKiB": 3737712,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419300743,
+      "cpuPercent": 14.5,
+      "rssKiB": 4103680,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0,
+          "rssKiB": 202448,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 87184,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28160,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 14.5,
+          "rssKiB": 3737712,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419301040,
+      "cpuPercent": 13.799999999999999,
+      "rssKiB": 4101472,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 8.6,
+          "rssKiB": 200688,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0.1,
+          "rssKiB": 86832,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28416,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 5.1,
+          "rssKiB": 3737360,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419301339,
+      "cpuPercent": 2.8,
+      "rssKiB": 4101424,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 1.7,
+          "rssKiB": 200688,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 86784,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28416,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 1.1,
+          "rssKiB": 3737360,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419301638,
+      "cpuPercent": 8.700000000000001,
+      "rssKiB": 4099136,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 8,
+          "rssKiB": 198704,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0.3,
+          "rssKiB": 86480,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28416,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 0.4,
+          "rssKiB": 3737360,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419301937,
+      "cpuPercent": 2.8,
+      "rssKiB": 4099136,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 2.8,
+          "rssKiB": 198704,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 86480,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28416,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 3737360,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419302233,
+      "cpuPercent": 0.4,
+      "rssKiB": 4099168,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0.4,
+          "rssKiB": 198704,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 86480,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28416,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 3737392,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419302533,
+      "cpuPercent": 0,
+      "rssKiB": 4099168,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0,
+          "rssKiB": 198704,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 86480,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28416,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 3737392,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419302832,
+      "cpuPercent": 0,
+      "rssKiB": 4099168,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0,
+          "rssKiB": 198704,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 86480,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28416,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 3737392,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419303130,
+      "cpuPercent": 0,
+      "rssKiB": 4099200,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0,
+          "rssKiB": 198704,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 86480,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28448,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 3737392,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419303423,
+      "cpuPercent": 0,
+      "rssKiB": 4099200,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0,
+          "rssKiB": 198704,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 86480,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28448,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 3737392,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419303723,
+      "cpuPercent": 0,
+      "rssKiB": 4098896,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0,
+          "rssKiB": 198704,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 86176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28448,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 3737392,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419304023,
+      "cpuPercent": 0,
+      "rssKiB": 4098336,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0,
+          "rssKiB": 198720,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 85600,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28448,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 3737392,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419304324,
+      "cpuPercent": 0,
+      "rssKiB": 4097984,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0,
+          "rssKiB": 198720,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 85248,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28448,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 3737392,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419304622,
+      "cpuPercent": 0,
+      "rssKiB": 4086960,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0,
+          "rssKiB": 198720,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 84016,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 48176,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28448,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 3727600,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419304921,
+      "cpuPercent": 0.1,
+      "rssKiB": 4083712,
+      "processes": [
+        {
+          "pid": 52492,
+          "ppid": 52447,
+          "cpuPercent": 0,
+          "rssKiB": 198720,
+          "name": "terminal-browser"
+        },
+        {
+          "pid": 52499,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 84016,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52502,
+          "ppid": 52492,
+          "cpuPercent": 0.1,
+          "rssKiB": 48208,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 52508,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 28448,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 52515,
+          "ppid": 52492,
+          "cpuPercent": 0,
+          "rssKiB": 3724320,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "method": "close",
+  "pid": 49584,
+  "ownedPids": [
+    49584,
+    49598,
+    49599,
+    49600,
+    49601,
+    49603
+  ],
+  "remainingPids": [],
+  "elapsedMs": 103.498875,
+  "passed": true
+}

@@ -1,0 +1,15 @@
+{
+  "note": "Warm host launch RPC through observed document load; 100 ms polling upper bound, excludes diff readiness.",
+  "samples": [
+    {
+      "method": "close",
+      "startupDocumentUpperBoundMs": 540.414625,
+      "result": "{\n  method: 'close',\n  pid: 49584,\n  ownedPids: [ 49584, 49598, 49599, 49600, 49601, 49603 ],\n  remainingPids: [],\n  elapsedMs: 103.498875,\n  passed: true\n}\n"
+    },
+    {
+      "method": "term",
+      "startupDocumentUpperBoundMs": 433.87579199999993,
+      "result": "{\n  method: 'term',\n  pid: 49723,\n  ownedPids: [ 49723, 49746, 49747, 49748, 49749, 49751 ],\n  remainingPids: [],\n  elapsedMs: 134.522292,\n  passed: true\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,985 @@
+{
+  "note": "ps CPU is a decaying average, not interval CPU; summed RSS double-counts shared pages. Descendant tree only, excludes terminal host.",
+  "samples": [
+    {
+      "at": 1795419020477,
+      "cpuPercent": 89.5,
+      "rssKiB": 2575648,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 43,
+          "rssKiB": 315840,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 8.6,
+          "rssKiB": 96912,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 37.9,
+          "rssKiB": 2029696,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419020750,
+      "cpuPercent": 96.4,
+      "rssKiB": 2730240,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 16.1,
+          "rssKiB": 315840,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 3.3,
+          "rssKiB": 96912,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 77,
+          "rssKiB": 2184288,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419021024,
+      "cpuPercent": 188.5,
+      "rssKiB": 2982496,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 5.4,
+          "rssKiB": 315776,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 1.5,
+          "rssKiB": 96912,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 181.6,
+          "rssKiB": 2436608,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419021298,
+      "cpuPercent": 177.7,
+      "rssKiB": 3051552,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 2.4,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 2.6,
+          "rssKiB": 97072,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 172.7,
+          "rssKiB": 2505520,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419021598,
+      "cpuPercent": 79.2,
+      "rssKiB": 3021296,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0.8,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0.9,
+          "rssKiB": 97056,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 77.5,
+          "rssKiB": 2475280,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419021886,
+      "cpuPercent": 29.1,
+      "rssKiB": 3021296,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0.2,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0.1,
+          "rssKiB": 97056,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 28.8,
+          "rssKiB": 2475280,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419022185,
+      "cpuPercent": 6.3999999999999995,
+      "rssKiB": 3021296,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0.1,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 97056,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 6.3,
+          "rssKiB": 2475280,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419022483,
+      "cpuPercent": 2.7,
+      "rssKiB": 3015920,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0.6,
+          "rssKiB": 92064,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 2.1,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419022782,
+      "cpuPercent": 1.2000000000000002,
+      "rssKiB": 3015920,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0.4,
+          "rssKiB": 92064,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 0.8,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419023079,
+      "cpuPercent": 0.1,
+      "rssKiB": 3015904,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 92048,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 0.1,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419023377,
+      "cpuPercent": 0,
+      "rssKiB": 3015904,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 92048,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419023676,
+      "cpuPercent": 0,
+      "rssKiB": 3015904,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 92048,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419023972,
+      "cpuPercent": 0,
+      "rssKiB": 3015904,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 92048,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419024266,
+      "cpuPercent": 0,
+      "rssKiB": 3015904,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 92048,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419024565,
+      "cpuPercent": 0,
+      "rssKiB": 3015904,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 92048,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419024863,
+      "cpuPercent": 0.1,
+      "rssKiB": 3015904,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0.1,
+          "rssKiB": 92048,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419025160,
+      "cpuPercent": 0,
+      "rssKiB": 3015904,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 92048,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419025459,
+      "cpuPercent": 0,
+      "rssKiB": 3015904,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 92048,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419025758,
+      "cpuPercent": 0,
+      "rssKiB": 3015904,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 92048,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": 1795419026055,
+      "cpuPercent": 0,
+      "rssKiB": 3015904,
+      "processes": [
+        {
+          "pid": 48372,
+          "ppid": 895,
+          "cpuPercent": 0,
+          "rssKiB": 47248,
+          "name": "node"
+        },
+        {
+          "pid": 48386,
+          "ppid": 48372,
+          "cpuPercent": 0,
+          "rssKiB": 315760,
+          "name": "pixel"
+        },
+        {
+          "pid": 48390,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 92048,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48399,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 53552,
+          "name": "Electron Helper"
+        },
+        {
+          "pid": 48400,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 32400,
+          "name": "native-scroll-helper"
+        },
+        {
+          "pid": 48402,
+          "ppid": 48386,
+          "cpuPercent": 0,
+          "rssKiB": 2474896,
+          "name": "Electron Helper (Renderer)"
+        }
+      ]
+    }
+  ]
+}

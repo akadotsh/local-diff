@@ -1,0 +1,112 @@
+{
+  "rexweb": {
+    "runs": 3,
+    "viewport": {
+      "width": 1176,
+      "dpr": 1,
+      "height": 1328
+    },
+    "diffReadyMedianMs": 1845,
+    "fpsMedian": 35.105315947843536,
+    "rafP95MedianMs": 63,
+    "longIntervalsMedian": 12,
+    "syntheticKeyMedianMs": 3303,
+    "resources": {
+      "rssMedianMiB": 125.703125,
+      "psCpuMedianPercent": 5.6,
+      "caveat": "ps CPU is a decaying average, not interval CPU; summed RSS double-counts shared pages. Descendant tree only, excludes terminal host."
+    },
+    "split-resize": {
+      "n": 20,
+      "p50Ms": 34.428750000000036,
+      "p95Ms": 37.17658300000039
+    },
+    "browserResizeToTwoRaf": {
+      "n": 2,
+      "valuesMs": [
+        2756.999999999998,
+        1537
+      ],
+      "note": "Only two coalesced browser resize events from 20 split requests; no meaningful p95."
+    }
+  },
+  "terminal-browser": {
+    "runs": 3,
+    "viewport": {
+      "width": 1155,
+      "height": 1344,
+      "dpr": 1
+    },
+    "diffReadyMedianMs": 1726.300000000745,
+    "fpsMedian": 104.3674798909792,
+    "rafP95MedianMs": 24.90000000000009,
+    "longIntervalsMedian": 11,
+    "syntheticKeyMedianMs": 707,
+    "resources": {
+      "rssMedianMiB": 4003.125,
+      "psCpuMedianPercent": 2.8,
+      "caveat": "ps CPU is a decaying average, not interval CPU; summed RSS double-counts shared pages. Descendant tree only, excludes terminal host."
+    },
+    "layout-resize": {
+      "n": 20,
+      "p50Ms": 429.77445799999987,
+      "p95Ms": 667.3671670000003
+    },
+    "split-resize": {
+      "n": 20,
+      "p50Ms": 18.58020899999974,
+      "p95Ms": 43.28533300000072
+    }
+  },
+  "chrome": {
+    "runs": 3,
+    "viewport": {
+      "width": 1155,
+      "height": 1344,
+      "dpr": 1
+    },
+    "diffReadyMedianMs": 1620.199999999255,
+    "fpsMedian": 100.0142503964617,
+    "rafP95MedianMs": 27.800000000000182,
+    "longIntervalsMedian": 18,
+    "syntheticKeyMedianMs": 798.3000000007451,
+    "resources": {
+      "rssMedianMiB": 4693.03125,
+      "psCpuMedianPercent": 13.799999999999999,
+      "caveat": "ps CPU is a decaying average, not interval CPU; summed RSS double-counts shared pages. Descendant tree only, excludes terminal host."
+    },
+    "layout-resize": {
+      "n": 20,
+      "p50Ms": 437.75074999999924,
+      "p95Ms": 578.189957999999
+    }
+  },
+  "pixel": {
+    "runs": 3,
+    "viewport": {
+      "width": 1155,
+      "height": 1344,
+      "dpr": 1
+    },
+    "diffReadyMedianMs": 1750.699999999255,
+    "fpsMedian": 104.03509938177226,
+    "rafP95MedianMs": 25,
+    "longIntervalsMedian": 13,
+    "syntheticKeyMedianMs": 689.7999999988824,
+    "resources": {
+      "rssMedianMiB": 2945.21875,
+      "psCpuMedianPercent": 0.1,
+      "caveat": "ps CPU is a decaying average, not interval CPU; summed RSS double-counts shared pages. Descendant tree only, excludes terminal host."
+    },
+    "split-resize": {
+      "n": 20,
+      "p50Ms": 19.345832999999402,
+      "p95Ms": 37.995750000000044
+    },
+    "hostResizeToBrowserTwoRaf": {
+      "n": 20,
+      "p50Ms": 522.4463749999995,
+      "p95Ms": 851.5167919999985
+    }
+  }
+}

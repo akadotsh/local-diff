@@ -1,0 +1,10 @@
+node_modules/
+dist/
+fixtures/
+chrome-profile/
+research/*
+!research/sources.json
+results/rex-actions.json
+results/*-block.json
+results/processes-*.txt
+results/final-*.json

@@ -1,0 +1,4 @@
+{
+  "launchToTitleUpperBoundMs": 2587.879875,
+  "note": "Warm installed runtime, daemon state uncontrolled; CLI polling upper bound to target title, not diff readiness."
+}

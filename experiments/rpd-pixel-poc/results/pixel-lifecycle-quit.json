@@ -1,0 +1,15 @@
+{
+  "method": "quit",
+  "pid": 48372,
+  "ownedPids": [
+    48372,
+    48386,
+    48390,
+    48399,
+    48400,
+    48402
+  ],
+  "remainingPids": [],
+  "elapsedMs": 144.683375,
+  "passed": true
+}
