@@ -1,3 +1,5 @@
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "./styles";
 import React, { useLayoutEffect, useRef, useState } from "react";
 
 export function SidebarResize() {
@@ -21,7 +23,7 @@ export function SidebarResize() {
   }
   return <div
     ref={handle}
-    className="sidebar-resize"
+    className={`sidebar-resize ${stylex.props(styles.sidebarResize).className}`}
     role="separator"
     aria-label="Resize sidebar"
     aria-orientation="vertical"
