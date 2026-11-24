@@ -1,3 +1,5 @@
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "./styles";
 import React, {
   useCallback,
   useEffect,
@@ -227,8 +229,8 @@ function App() {
   }
   return (
     <>
-      <header className={`app-header ${sidebarMode === "explorer" ? "explorer-mode" : ""}`}>
-        <div className="app-identity">
+      <header className={`app-header ${stylex.props(styles.appHeader).className} ${sidebarMode === "explorer" ? "explorer-mode" : ""}`}>
+        <div className={`app-identity ${stylex.props(styles.appIdentity).className}`}>
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <rect x="3" y="3" width="18" height="18" rx="5" />
             <path d="M8 8h5" stroke="#ff6b7a" />
@@ -237,7 +239,7 @@ function App() {
           </svg>
           <b>Rex Pierre Diffs</b>
         </div>
-        <nav className="mobile-tabs">
+        <nav className={`mobile-tabs ${stylex.props(styles.mobileTabs).className}`}>
           <button
             aria-pressed={mobileView === "diff"}
             onClick={() => setMobileView("diff")}
@@ -271,7 +273,7 @@ function App() {
           <option value="compact">Compact</option>
         </select>
         <button
-          className="popout-button"
+          className={`popout-button ${stylex.props(styles.popoutButton).className}`}
           title="Open review in a separate window"
           aria-label="Open review in a separate window"
           onClick={() => window.open(window.location.href, "_blank", "popup,width=1440,height=900,noopener,noreferrer")}
@@ -288,9 +290,9 @@ function App() {
         className={`mobile-${mobileView} sidebar-${sidebarSide} ${sidebarOpen ? "" : "sidebar-collapsed"}`}
       >
         <aside>
-          <div className="sidebar-heading">
+          <div className={`sidebar-heading ${stylex.props(styles.sidebarHeading).className}`}>
             <button
-              className="sidebar-toggle"
+              className={`sidebar-toggle ${stylex.props(styles.sidebarToggle).className}`}
               aria-label={sidebarOpen ? "Hide files" : "Show files"}
               title={sidebarOpen ? "Hide files" : "Show files"}
               aria-expanded={sidebarOpen}
@@ -313,20 +315,20 @@ function App() {
                 <path d="M9 4v16" />
               </svg>
             </button>
-            <nav className="sidebar-modes" aria-label="Sidebar view">
-              <button className="sidebar-mode-button" title="Changes" aria-label="Changes" aria-pressed={sidebarMode === "changes"} onClick={() => setSidebarMode("changes")}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3 4 7l4 4M4 7h12M16 21l4-4-4-4m4 4H8" /></svg></button>
-              <button className="sidebar-mode-button" title="Explorer" aria-label="Explorer" aria-pressed={sidebarMode === "explorer"} onClick={() => { setExplorerOpened(true); setSidebarMode("explorer"); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h10a2 2 0 0 1 2 2v12M4 7h8l4 4v10H4zM12 7v4h4" /></svg></button>
+            <nav className={`sidebar-modes ${stylex.props(styles.sidebarModes).className}`} aria-label="Sidebar view">
+              <button className={`sidebar-mode-button ${stylex.props(styles.sidebarModeButton).className}`} title="Changes" aria-label="Changes" aria-pressed={sidebarMode === "changes"} onClick={() => setSidebarMode("changes")}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3 4 7l4 4M4 7h12M16 21l4-4-4-4m4 4H8" /></svg></button>
+              <button className={`sidebar-mode-button ${stylex.props(styles.sidebarModeButton).className}`} title="Explorer" aria-label="Explorer" aria-pressed={sidebarMode === "explorer"} onClick={() => { setExplorerOpened(true); setSidebarMode("explorer"); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h10a2 2 0 0 1 2 2v12M4 7h8l4 4v10H4zM12 7v4h4" /></svg></button>
             </nav>
             <h3 hidden={sidebarMode !== "changes"}>
-              <span className="sr-only">Changes</span> <span className="file-count">{files.length}</span>
+              <span className={`sr-only ${stylex.props(styles.srOnly).className}`}>Changes</span> <span className={`file-count ${stylex.props(styles.fileCount).className}`}>{files.length}</span>
             </h3>
             {sidebarMode === "changes" && (totals.added || totals.deleted) > 0 && (
-              <small className="change-totals">
+              <small className={`change-totals ${stylex.props(styles.changeTotals).className}`}>
                 <span>+{totals.added}</span> <span>−{totals.deleted}</span>
               </small>
             )}
           </div>
-          <div className="changes-sidebar" hidden={sidebarMode !== "changes"}>
+          <div className={`changes-sidebar ${stylex.props(styles.changesSidebar).className}`} hidden={sidebarMode !== "changes"}>
           <input
             type="search"
             aria-label="Search files"
@@ -335,7 +337,7 @@ function App() {
             onChange={(e) => setSearch(e.target.value)}
           />
           {visibleFiles.map(({ index, name }) => (
-            <div className="file-item" key={index}>
+            <div className={`file-item ${stylex.props(styles.fileItem).className}`} key={index}>
               <a
                 href={"#f" + index}
                 onClick={() => {
@@ -349,7 +351,7 @@ function App() {
                 {name}
               </a>
               <button
-                className="viewed-toggle"
+                className={`viewed-toggle ${stylex.props(styles.viewedToggle).className}`}
                 aria-label={
                   viewed.has(name) ? "Mark as unviewed" : "Mark as viewed"
                 }
@@ -371,16 +373,16 @@ function App() {
           ))}
           {search && visibleFiles.length === 0 && <p>No matching files.</p>}
           </div>
-          <div className="explorer-host" ref={setExplorerHost} hidden={sidebarMode !== "explorer"} />
-          <div className="sidebar-footer">
-            <span className="connection-dot" aria-hidden="true" />
+          <div className={`explorer-host ${stylex.props(styles.explorerHost).className}`} ref={setExplorerHost} hidden={sidebarMode !== "explorer"} />
+          <div className={`sidebar-footer ${stylex.props(styles.sidebarFooter).className}`}>
+            <span className={`connection-dot ${stylex.props(styles.connectionDot).className}`} aria-hidden="true" />
             <span>Local</span>
-            <span className="footer-branch" title={data?.branch}>
+            <span className={`footer-branch ${stylex.props(styles.footerBranch).className}`} title={data?.branch}>
               {data?.branch}
             </span>
-            <div className="sidebar-settings">
+            <div className={`sidebar-settings ${stylex.props(styles.sidebarSettings).className}`}>
               <button
-                className="sidebar-settings-trigger"
+                className={`sidebar-settings-trigger ${stylex.props(styles.sidebarSettingsTrigger).className}`}
                 aria-label="Sidebar settings"
                 title="Sidebar settings"
                 aria-expanded={sidebarSettingsOpen}
@@ -397,7 +399,7 @@ function App() {
         <SidebarResize />
         <section
           hidden={sidebarMode !== "changes"}
-          className="diff-content"
+          className={`diff-content ${stylex.props(styles.diffContent).className}`}
           aria-label="Diff viewer"
           onScroll={(e) => {
             const articles = e.currentTarget.querySelectorAll("article");
@@ -410,7 +412,7 @@ function App() {
             if (current) setActiveFile(current.dataset.file);
           }}
         >
-          <details className="review-notes">
+          <details className={`review-notes ${stylex.props(styles.reviewNotes).className}`}>
             <summary>Review notes ({comments.length})</summary>
             {comments.map((c) => (
               <p key={c.id}>
@@ -423,7 +425,7 @@ function App() {
               <article id={"f" + i} data-file={fileNames[i]} key={i}>
                 {viewed.has(fileNames[i]) ? (
                   <button
-                    className="collapsed-diff"
+                    className={`collapsed-diff ${stylex.props(styles.collapsedDiff).className}`}
                     onClick={() =>
                       setViewed((current) => {
                         const next = new Set(current);
@@ -443,7 +445,7 @@ function App() {
                     lineAnnotations={selection?.patch === f ? annotations : NO_ANNOTATIONS}
                     renderAnnotation={() => (
                       <div
-                        className="inline-composer"
+                        className={`inline-composer ${stylex.props(styles.inlineComposer).className}`}
                         role="region"
                         aria-label="Ask Agent about selected lines"
                         onKeyDown={(e) => {
@@ -452,11 +454,11 @@ function App() {
                           }
                         }}
                       >
-                        <div className="composer-heading">
-                          <div className="composer-title">
+                        <div className={`composer-heading ${stylex.props(styles.composerHeading).className}`}>
+                          <div className={`composer-title ${stylex.props(styles.composerTitle).className}`}>
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 7 4 4-4 4m8 0h6" /></svg>
                             <strong>Ask Agent</strong>
-                            <span className="composer-line-badge">
+                            <span className={`composer-line-badge ${stylex.props(styles.composerLineBadge).className}`}>
                               L{context?.start}
                               {context?.end !== context?.start
                                 ? `–${context?.end}`
@@ -466,7 +468,7 @@ function App() {
                           </div>
                           <button
                             type="button"
-                            className="composer-close"
+                            className={`composer-close ${stylex.props(styles.composerClose).className}`}
                             aria-label="Close composer"
                             onClick={() => {
                               setSelection(undefined);
@@ -482,8 +484,8 @@ function App() {
                           placeholder="Ask about these lines…"
                           rows={3}
                         />
-                        <div className="composer-actions">
-                          <div className="composer-destination">
+                        <div className={`composer-actions ${stylex.props(styles.composerActions).className}`}>
+                          <div className={`composer-destination ${stylex.props(styles.composerDestination).className}`}>
                           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m7 9 3 3-3 3m6 0h4"/></svg>
                           <select
                             aria-label="Target Rex pane"
@@ -502,11 +504,11 @@ function App() {
                           </select>
                           </div>
                           <button
-                            className="ask-agent-button"
+                            className={`ask-agent-button ${stylex.props(styles.askAgentButton).className}`}
                             disabled={!targets.some(t => t.id === target)}
                             onClick={send}
                           >
-                            {agentIcon && <img className="agent-icon" src={agentIcon} alt="" width="16" height="16" />}
+                            {agentIcon && <img className={`agent-icon ${stylex.props(styles.agentIcon).className}`} src={agentIcon} alt="" width="16" height="16" />}
                             {agentName ? `Ask ${agentName}` : "Ask Agent"}
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
                           </button>
@@ -518,7 +520,7 @@ function App() {
                     renderHeaderFilenameSuffix={() => (
                       <button
                         type="button"
-                        className="copy-filename"
+                        className={`copy-filename ${stylex.props(styles.copyFilename).className}`}
                         aria-label={`Copy file path: ${fileNames[i]}`}
                         title="Copy file path"
                         onClick={(e) => {
@@ -546,8 +548,8 @@ function App() {
               </article>
             ))
           ) : (
-            <div className="empty-state">
-              <div className="empty-icon">
+            <div className={`empty-state ${stylex.props(styles.emptyState).className}`}>
+              <div className={`empty-icon ${stylex.props(styles.emptyIcon).className}`}>
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="m8 12 3 3 5-6" />
                   <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -576,36 +578,36 @@ function App() {
       </main>
       <dialog
         ref={sidebarSettingsDialogRef}
-        className="settings-dialog"
+        className={`settings-dialog ${stylex.props(styles.settingsDialog).className}`}
         aria-labelledby="settings-title"
         onClose={() => setSidebarSettingsOpen(false)}
         onClick={event => {
           if (event.target === event.currentTarget) setSidebarSettingsOpen(false);
         }}
       >
-        <header className="settings-dialog-header">
+        <header className={`settings-dialog-header ${stylex.props(styles.settingsDialogHeader).className}`}>
           <div>
             <h2 id="settings-title">Settings</h2>
             <p>Review workspace preferences</p>
           </div>
-          <button className="settings-close" aria-label="Close settings" onClick={() => setSidebarSettingsOpen(false)}>
+          <button className={`settings-close ${stylex.props(styles.settingsClose).className}`} aria-label="Close settings" onClick={() => setSidebarSettingsOpen(false)}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
           </button>
         </header>
-        <div className="settings-dialog-body">
-          <nav className="settings-nav" aria-label="Settings sections">
-            <button className="settings-nav-item selected" aria-current="page">
+        <div className={`settings-dialog-body ${stylex.props(styles.settingsDialogBody).className}`}>
+          <nav className={`settings-nav ${stylex.props(styles.settingsNav).className}`} aria-label="Settings sections">
+            <button className={`settings-nav-item selected ${stylex.props(styles.settingsNavItem).className}`} aria-current="page">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" /></svg>
               Appearance
             </button>
           </nav>
-          <section className="settings-content" aria-label="Appearance settings">
+          <section className={`settings-content ${stylex.props(styles.settingsContent).className}`} aria-label="Appearance settings">
             <section className="appearance-setting" aria-labelledby="settings-sidebar-title">
               <h4 id="settings-sidebar-title">Sidebar</h4>
               <p>Choose where the review sidebar appears.</p>
-              <div className="layout-choices" role="radiogroup" aria-label="Sidebar position">
+              <div className={`layout-choices ${stylex.props(styles.layoutChoices).className}`} role="radiogroup" aria-label="Sidebar position">
                 {(["left", "right"] as const).map(side => (
-                  <label className={`layout-choice${sidebarSide === side ? " selected" : ""}`} key={side}>
+                  <label className={`layout-choice ${stylex.props(styles.layoutChoice).className}${sidebarSide === side ? " selected" : ""}`} key={side}>
                     <input
                       type="radio"
                       name="sidebar-position"
@@ -613,16 +615,16 @@ function App() {
                       checked={sidebarSide === side}
                       onChange={() => setSidebarSide(side)}
                     />
-                    <span className="layout-choice-heading">
-                      <span className="layout-choice-label">Sidebar on the {side}</span>
-                      <span className="layout-choice-radio" aria-hidden="true">
+                    <span className={`layout-choice-heading ${stylex.props(styles.layoutChoiceHeading).className}`}>
+                      <span className={`layout-choice-label ${stylex.props(styles.layoutChoiceLabel).className}`}>Sidebar on the {side}</span>
+                      <span className={`layout-choice-radio ${stylex.props(styles.layoutChoiceRadio).className}`} aria-hidden="true">
                         {sidebarSide === side && <svg viewBox="0 0 20 20"><path d="m4 10 4 4 8-8" /></svg>}
                       </span>
                     </span>
-                    <span className={`layout-preview layout-preview-${side}`} aria-hidden="true">
-                      <span className="layout-preview-chrome"><i /><i /><i /></span>
-                      <span className="layout-preview-sidebar"><i /><i /><i /><i /></span>
-                      <span className="layout-preview-main">
+                    <span className={`layout-preview layout-preview-${side} ${stylex.props(styles.layoutPreview, side === "right" && styles.layoutPreviewRight).className}`} aria-hidden="true">
+                      <span className={`layout-preview-chrome ${stylex.props(styles.layoutPreviewChrome).className}`}><i /><i /><i /></span>
+                      <span className={`layout-preview-sidebar ${stylex.props(styles.layoutPreviewSidebar).className}`}><i /><i /><i /><i /></span>
+                      <span className={`layout-preview-main ${stylex.props(styles.layoutPreviewMain).className}`}>
                         <i /><i /><i /><i /><i /><i />
                       </span>
                     </span>
@@ -633,14 +635,14 @@ function App() {
             <section className="appearance-setting" aria-labelledby="settings-theme-title">
               <h4 id="settings-theme-title">Theme</h4>
               <p>Choose the color theme for the review workspace.</p>
-              <div className="theme-choices" role="radiogroup" aria-label="Color theme">
+              <div className={`theme-choices ${stylex.props(styles.themeChoices).className}`} role="radiogroup" aria-label="Color theme">
                 {(["system", "light", "dark"] as const).map(theme => (
-                  <label className={`theme-choice${themePreference === theme ? " selected" : ""}`} key={theme}>
+                  <label className={`theme-choice ${stylex.props(styles.themeChoice).className}${themePreference === theme ? " selected" : ""}`} key={theme}>
                     <input type="radio" name="color-theme" value={theme} checked={themePreference === theme} onChange={() => setThemePreference(theme)} />
-                    <span className={`theme-swatch theme-swatch-${theme}`} aria-hidden="true"><i /><i /></span>
-                    <span className="layout-choice-heading">
-                      <span className="theme-choice-label">{theme[0].toUpperCase() + theme.slice(1)}</span>
-                      <span className="layout-choice-radio" aria-hidden="true">
+                    <span className={`theme-swatch theme-swatch-${theme} ${stylex.props(styles.themeSwatch, theme === "dark" && styles.themeSwatchDark, theme === "light" && styles.themeSwatchLight, theme === "system" && styles.themeSwatchSystem).className}`} aria-hidden="true"><i /><i /></span>
+                    <span className={`layout-choice-heading ${stylex.props(styles.layoutChoiceHeading).className}`}>
+                      <span className={`theme-choice-label ${stylex.props(styles.themeChoiceLabel).className}`}>{theme[0].toUpperCase() + theme.slice(1)}</span>
+                      <span className={`layout-choice-radio ${stylex.props(styles.layoutChoiceRadio).className}`} aria-hidden="true">
                         {themePreference === theme && <svg viewBox="0 0 20 20"><path d="m4 10 4 4 8-8" /></svg>}
                       </span>
                     </span>
@@ -652,7 +654,7 @@ function App() {
         </div>
       </dialog>
       {status && (
-        <div className="status" role="status">
+        <div className={`status ${stylex.props(styles.status).className}`} role="status">
           {status}
         </div>
       )}
@@ -669,7 +671,7 @@ class ErrorBoundary extends React.Component<
   }
   render() {
     return this.state.error ? (
-      <pre className="app-error">
+      <pre className={`app-error ${stylex.props(styles.appError).className}`}>
         rex-pierre-diffs could not render this diff: {this.state.error.message}
       </pre>
     ) : (
