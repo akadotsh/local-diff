@@ -1,3 +1,5 @@
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "./styles";
 import React, { useEffect, useRef, useState } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
@@ -109,13 +111,13 @@ export function Explorer({ sidebar, token, active, theme, onSelect }: { sidebar:
     } catch(error) { setMessageStatus(String(error)); }
   }
   return <>
-    {createPortal(<div className="explorer-sidebar" hidden={!active}>
+    {createPortal(<div className={`explorer-sidebar ${stylex.props(styles.explorerSidebar).className}`} hidden={!active}>
       {error && <p role="alert">{error}</p>}
       {!listing && !error && <p role="status">Loading repository…</p>}
       {listing?.paths.length === 0 && <p>No repository files.</p>}
       <FileTree
         model={model}
-        className="repository-tree"
+        className={`repository-tree ${stylex.props(styles.repositoryTree).className}`}
         aria-label="Repository files"
         style={{
           colorScheme: theme,
@@ -127,13 +129,13 @@ export function Explorer({ sidebar, token, active, theme, onSelect }: { sidebar:
         } as React.CSSProperties}
       />
     </div>, sidebar)}
-    <section className="source-content" aria-label="File preview" hidden={!active}>
-      {!selected ? <div className="empty-state"><h1>Explore your repository</h1><p>Select a file to read its source.</p></div>
-        : image ? <img className="repository-image-preview" src={"/api/file-asset?path=" + encodeURIComponent(selected) + "&token=" + encodeURIComponent(token)} alt={selected} />
-        : previewError ? <div className="empty-state" role="alert"><h1>Could not preview file</h1><p>{previewError}</p></div>
-        : !displayed ? <div className="empty-state" role="status">Loading {selected}…</div>
-        : markdown && markdownPreview ? <><div className="markdown-preview-toolbar"><span>{selected}</span><button onClick={() => setMarkdownPreview(false)}>Source</button></div><article className="markdown-preview" dangerouslySetInnerHTML={{__html:DOMPurify.sanitize(marked.parse(displayed.contents) as string)}} /></>
-        : <><div className="source-toolbar">{markdown && <button onClick={() => setMarkdownPreview(true)}>Preview</button>}</div><File file={displayed} options={{...fileOptions(theme), enableLineSelection:true, onLineSelectionEnd:setSelectedLines}} selectedLines={selectedLines} lineAnnotations={annotations} renderAnnotation={(annotation: LineAnnotation) => annotation.lineNumber === selectedLines?.end ? <div className="inline-composer" role="region" aria-label="Ask Agent about selected lines"><div className="composer-heading"><strong>Ask Agent · {selectedLines.start}{selectedLines.end !== selectedLines.start ? `–${selectedLines.end}` : ""}</strong><button className="composer-close" aria-label="Close composer" onClick={() => setSelectedLines(null)}>×</button></div><textarea aria-label="Question for agent" value={question} onChange={event => setQuestion(event.target.value)} placeholder="Ask about these lines…" rows={3}/><div className="composer-actions"><select aria-label="Target Rex pane" value={target} onChange={event => setTarget(event.target.value)}><option value="">{targets.length ? "Choose agent pane…" : "No recognized agent panes"}</option>{targets.map(agent => <option key={agent.id} value={agent.id}>{agent.agent} · {agent.id.slice(-6)}</option>)}</select><button className="ask-agent-button" disabled={!targets.some(agent => agent.id === target)} onClick={() => void sendToAgent()}>Ask Agent</button></div>{messageStatus && <small>{messageStatus}</small>}</div> : null} />{!displayed.contents && <p className="source-empty">This file is empty.</p>}</>}
+    <section className={`source-content ${stylex.props(styles.sourceContent).className}`} aria-label="File preview" hidden={!active}>
+      {!selected ? <div className={`empty-state ${stylex.props(styles.emptyState).className}`}><h1>Explore your repository</h1><p>Select a file to read its source.</p></div>
+        : image ? <img className={`repository-image-preview ${stylex.props(styles.repositoryImagePreview).className}`} src={"/api/file-asset?path=" + encodeURIComponent(selected) + "&token=" + encodeURIComponent(token)} alt={selected} />
+        : previewError ? <div className={`empty-state ${stylex.props(styles.emptyState).className}`} role="alert"><h1>Could not preview file</h1><p>{previewError}</p></div>
+        : !displayed ? <div className={`empty-state ${stylex.props(styles.emptyState).className}`} role="status">Loading {selected}…</div>
+        : markdown && markdownPreview ? <><div className={`markdown-preview-toolbar ${stylex.props(styles.markdownPreviewToolbar).className}`}><span>{selected}</span><button onClick={() => setMarkdownPreview(false)}>Source</button></div><article className={`markdown-preview ${stylex.props(styles.markdownPreview).className}`} dangerouslySetInnerHTML={{__html:DOMPurify.sanitize(marked.parse(displayed.contents) as string)}} /></>
+        : <><div className={`source-toolbar ${stylex.props(styles.sourceToolbar).className}`}>{markdown && <button onClick={() => setMarkdownPreview(true)}>Preview</button>}</div><File file={displayed} options={{...fileOptions(theme), enableLineSelection:true, onLineSelectionEnd:setSelectedLines}} selectedLines={selectedLines} lineAnnotations={annotations} renderAnnotation={(annotation: LineAnnotation) => annotation.lineNumber === selectedLines?.end ? <div className={`inline-composer ${stylex.props(styles.inlineComposer).className}`} role="region" aria-label="Ask Agent about selected lines"><div className={`composer-heading ${stylex.props(styles.composerHeading).className}`}><strong>Ask Agent · {selectedLines.start}{selectedLines.end !== selectedLines.start ? `–${selectedLines.end}` : ""}</strong><button className={`composer-close ${stylex.props(styles.composerClose).className}`} aria-label="Close composer" onClick={() => setSelectedLines(null)}>×</button></div><textarea aria-label="Question for agent" value={question} onChange={event => setQuestion(event.target.value)} placeholder="Ask about these lines…" rows={3}/><div className={`composer-actions ${stylex.props(styles.composerActions).className}`}><select aria-label="Target Rex pane" value={target} onChange={event => setTarget(event.target.value)}><option value="">{targets.length ? "Choose agent pane…" : "No recognized agent panes"}</option>{targets.map(agent => <option key={agent.id} value={agent.id}>{agent.agent} · {agent.id.slice(-6)}</option>)}</select><button className={`ask-agent-button ${stylex.props(styles.askAgentButton).className}`} disabled={!targets.some(agent => agent.id === target)} onClick={() => void sendToAgent()}>Ask Agent</button></div>{messageStatus && <small>{messageStatus}</small>}</div> : null} />{!displayed.contents && <p className="source-empty">This file is empty.</p>}</>}
 
     </section>
   </>;
