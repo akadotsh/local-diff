@@ -4,7 +4,7 @@
 
 ### Upgrade requirement
 
-The viewer now opens in [RexWeb](https://github.com/acoyfellow/rexweb) instead of terminal-browser. Install RexWeb, ensure `rexweb` is on your PATH, and run `rexweb doctor` before using `rpd`. Requires macOS 14 or newer. The npm installation still requires Node.js 20 or newer.
+The viewer now opens in [RexWeb](https://github.com/acoyfellow/rexweb) instead of terminal-browser. Install RexWeb, ensure `rexweb` is on your PATH, and run `rexweb doctor` before using `local-diff`. Requires macOS 14 or newer. The npm installation still requires Node.js 20 or newer.
 
 ### Improvements
 
@@ -13,7 +13,7 @@ The viewer now opens in [RexWeb](https://github.com/acoyfellow/rexweb) instead o
 - Preserve scroll position while choosing an agent or typing a question.
 - Copy repository-relative file paths from diff headers.
 - Refine the Rex-style UI with a sliding sidebar, clearer empty states, improved spacing, and reduced-motion support.
-- Refresh Rex Pierre Diffs branding, logo colors, and documentation.
+- Refresh Local Diff branding, logo colors, and documentation.
 
 ### Notes
 

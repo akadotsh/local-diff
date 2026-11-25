@@ -32,7 +32,7 @@ export function git(root: string, args: string[]) {
 }
 
 export function reviewFile(root: string) {
-  return resolve(root, git(root, ['rev-parse', '--git-path', 'rex-pierre-diffs.json']).trim());
+  return resolve(root, git(root, ['rev-parse', '--git-path', 'local-diff.json']).trim());
 }
 
 async function addedFilePatch(root: string, file: string) {
@@ -67,7 +67,7 @@ export async function getSnapshot(root: string, mode = 'all') {
   const untracked = mode === 'staged' ? [] : git(root, ['ls-files', '--others', '--exclude-standard', '-z']).split('\0').filter(Boolean);
   let extra = '';
   for (const file of untracked) extra += await addedFilePatch(root, file);
-  return { app: 'rex-pierre-diffs', root, branch: git(root, ['branch', '--show-current']).trim(), patch: tracked + extra };
+  return { app: 'local-diff', root, branch: git(root, ['branch', '--show-current']).trim(), patch: tracked + extra };
 }
 
 export async function repositoryFiles(root: string) {
@@ -158,7 +158,7 @@ function agentPanes(session: string, rexCommand: (args: string[]) => CommandResu
 }
 
 export function createApp(root: string, token: string, reviewsPath = reviewFile(root), clients = new Set<ReviewClient>(), rexCommand = (args: string[]) => command('rex', args)) {
-  const dist = process.env.RPD_DIST_DIR ? resolve(process.env.RPD_DIST_DIR) : resolve(dirname(fileURLToPath(import.meta.url)), '../dist');
+  const dist = process.env.LOCAL_DIFF_DIST_DIR ? resolve(process.env.LOCAL_DIFF_DIST_DIR) : resolve(dirname(fileURLToPath(import.meta.url)), '../dist');
   let listing: ReturnType<typeof repositoryFiles> | undefined;
   const handler = async (req: Request) => {
     const url = new URL(req.url);
@@ -289,13 +289,13 @@ export async function startServer(root = findRepository(), port = Number(process
     server.once('error', onError);
     server.listen(port, '127.0.0.1', () => { server.off('error', onError); resolveListen(); });
   });
-  const watcher = watch(root, { ignored: [/\/\.git\/(?:objects|logs)(?:\/|$)/, /\/\.git\/rex-pierre-diffs\.json$/, /\/node_modules(?:\/|$)/], ignoreInitial: true }).on('all', () => {
+  const watcher = watch(root, { ignored: [/\/\.git\/(?:objects|logs)(?:\/|$)/, /\/\.git\/local-diff\.json$/, /\/node_modules(?:\/|$)/], ignoreInitial: true }).on('all', () => {
     app.invalidateFiles();
     clearTimeout(refreshTimer);
     refreshTimer = setTimeout(() => { for (const client of clients) try { client.enqueue(new TextEncoder().encode('data: update\n\n')); } catch { clients.delete(client); } }, 250);
   });
   const address = server.address() as AddressInfo;
-  const infoPath = resolve(tmpdir(), `rex-pierre-diffs-${process.pid}.json`);
+  const infoPath = resolve(tmpdir(), `local-diff-${process.pid}.json`);
   try { await writeFile(infoPath, JSON.stringify({ root, port: address.port })); }
   catch (error) { await watcher.close(); server.close(); throw error; }
   const cleanup = () => { clearTimeout(refreshTimer); void watcher.close(); void unlink(infoPath).catch(() => {}); };
@@ -304,7 +304,7 @@ export async function startServer(root = findRepository(), port = Number(process
   process.once('SIGINT', shutdown);
   process.once('SIGTERM', shutdown);
   server.once('close', () => { process.off('SIGINT', shutdown); process.off('SIGTERM', shutdown); });
-  console.log(`[rex-pierre-diffs] listening at http://127.0.0.1:${address.port} (root ${root})`);
+  console.log(`[local-diff] listening at http://127.0.0.1:${address.port} (root ${root})`);
   return server;
 }
 

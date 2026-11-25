@@ -19,7 +19,7 @@ try {
     if (!listed.blocks.some(item => item.block_id === block)) block = undefined;
   }
   if (session) process.env.REX_SESSION = session;
-  // A fresh port always serves this checkout, never an older installed rpd server.
+  // A fresh port always serves this checkout, never an older installed local-diff server.
   const token = randomUUID();
   server = await startServer(findRepository(), 0, token);
   server.once('close', () => {

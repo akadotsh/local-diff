@@ -6,12 +6,12 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 
-const executable = resolve('dist-standalone/rpd');
+const executable = resolve('dist-standalone/local-diff');
 let built = true;
 try { await access(executable); } catch { built = false; }
 
 test('standalone SEA runs without Node on PATH and serves packaged frontend and Git diffs', { skip: !built, timeout: 20_000 }, async () => {
-  const sandbox = await mkdtemp(join(tmpdir(), 'rpd-standalone-'));
+  const sandbox = await mkdtemp(join(tmpdir(), 'local-diff-standalone-'));
   const pathDir = join(sandbox, 'bin');
   const root = join(sandbox, 'repo');
   await mkdir(pathDir);
@@ -26,10 +26,7 @@ test('standalone SEA runs without Node on PATH and serves packaged frontend and 
   try {
     const help = spawnSync(executable, ['--help'], { encoding: 'utf8', env });
     assert.equal(help.status, 0, help.stderr);
-    assert.match(help.stdout, /Usage: rex-pierre-diffs/);
-    const alias = spawnSync(resolve('dist-standalone/rex-pierre-diffs'), ['--help'], { encoding: 'utf8', env });
-    assert.equal(alias.status, 0, alias.stderr);
-    assert.match(alias.stdout, /Usage: rex-pierre-diffs/);
+    assert.match(help.stdout, /Usage: local-diff/);
     assert.equal((spawnSync('node', ['--version'], { env }).error as NodeJS.ErrnoException | undefined)?.code, 'ENOENT');
     const invalid = spawnSync(executable, ['--split', 'diagonal'], { cwd: root, encoding: 'utf8', env });
     assert.equal(invalid.status, 1);
@@ -55,7 +52,7 @@ test('standalone SEA runs without Node on PATH and serves packaged frontend and 
     child = spawn(executable, ['--internal-server'], { cwd: root, env: { ...env, PORT: String(port) }, stdio: ['ignore', 'pipe', 'pipe'] });
     child.stdout?.on('data', chunk => { serverOutput += String(chunk); });
     child.stderr?.on('data', chunk => { serverOutput += String(chunk); });
-    infoPath = join(tmpdir(), `rex-pierre-diffs-${child.pid}.json`);
+    infoPath = join(tmpdir(), `local-diff-${child.pid}.json`);
     let info: { port: number } | undefined;
     for (let attempt = 0; attempt < 100; attempt++) {
       try { info = JSON.parse(await readFile(infoPath, 'utf8')) as { port: number }; break; }

@@ -237,7 +237,7 @@ function App() {
             <path d="M8 12h8" />
             <path d="M11 16h5" stroke="#3dd68c" />
           </svg>
-          <b>Rex Pierre Diffs</b>
+          <b>Local Diff</b>
         </div>
         <nav className={`mobile-tabs ${stylex.props(styles.mobileTabs).className}`}>
           <button
@@ -672,7 +672,7 @@ class ErrorBoundary extends React.Component<
   render() {
     return this.state.error ? (
       <pre className={`app-error ${stylex.props(styles.appError).className}`}>
-        rex-pierre-diffs could not render this diff: {this.state.error.message}
+        local-diff could not render this diff: {this.state.error.message}
       </pre>
     ) : (
       this.props.children

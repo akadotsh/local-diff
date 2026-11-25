@@ -15,7 +15,7 @@ function runGit(cwd: string, ...args: string[]) {
 const git = (...args: string[]) => runGit(root, ...args);
 
 beforeEach(async () => {
-  root = await realpath(await mkdtemp(join(tmpdir(), 'rex-pierre-diffs-')));
+  root = await realpath(await mkdtemp(join(tmpdir(), 'local-diff-')));
   runGit(root, 'init', '-q');
   git('config', 'user.email', 'test@example.com');
   git('config', 'user.name', 'Test');
@@ -65,7 +65,7 @@ describe('Git integration', () => {
     assert.throws(() => findRepository('/'), /Not inside a Git repository/);
   });
   test('handles an empty repository without commits and empty untracked files', async () => {
-    const empty = await realpath(await mkdtemp(join(tmpdir(), 'rex-pierre-empty-')));
+    const empty = await realpath(await mkdtemp(join(tmpdir(), 'local-diff-empty-')));
     try {
       runGit(empty, 'init', '-q');
       assert.equal((await getSnapshot(empty)).patch, '');
@@ -82,7 +82,7 @@ describe('Git integration', () => {
     } finally { await rm(empty, { recursive: true, force: true }); }
   });
   test('does not read an untracked symlink that escapes the repository', async () => {
-    const outside = await mkdtemp(join(tmpdir(), 'rex-pierre-outside-'));
+    const outside = await mkdtemp(join(tmpdir(), 'local-diff-outside-'));
     try {
       await writeFile(join(outside, 'secret.ts'), 'local secret\n');
       await symlink(join(outside, 'secret.ts'), join(root, 'escape.ts'));

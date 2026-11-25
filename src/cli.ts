@@ -14,13 +14,13 @@ async function main() {
   const commandArgs = process.argv.slice(2);
   if (commandArgs[0] === '--version' && commandArgs.length === 1) { console.log(installedVersion()); return; }
   if (commandArgs[0] === 'upgrade') {
-    if (commandArgs.length > 2 || (commandArgs[1] !== undefined && commandArgs[1] !== '--check')) throw new Error('Usage: rpd upgrade [--check]');
+    if (commandArgs.length > 2 || (commandArgs[1] !== undefined && commandArgs[1] !== '--check')) throw new Error('Usage: local-diff upgrade [--check]');
     await upgrade(commandArgs[1] === '--check');
     return;
   }
   const options = parseCliArgs(process.argv.slice(2), process.cwd());
   if (options.help) {
-    console.log('rex-pierre-diffs — review local Git changes inside Rex\n\nUsage: rex-pierre-diffs [--split right|left|above|below] [--cwd PATH] [--session ID] [--block ID]\n\nOther commands: rpd upgrade [--check], rpd --version\n\nRun inside a Git repository in a Rex terminal. Requires macOS 14 or newer, Git, Rex, and rexweb. Requires Node.js only for npm installations.');
+    console.log('local-diff — review local Git changes inside Rex\n\nUsage: local-diff [--split right|left|above|below] [--cwd PATH] [--session ID] [--block ID]\n\nOther commands: local-diff upgrade [--check], local-diff --version\n\nRun inside a Git repository in a Rex terminal. Requires macOS 14 or newer, Git, Rex, and rexweb. Requires Node.js only for npm installations.');
     return;
   }
 
@@ -45,7 +45,7 @@ async function main() {
     }
   }
 
-  const logPath = join(tmpdir(), `rex-pierre-diffs-server-${process.pid}.log`);
+  const logPath = join(tmpdir(), `local-diff-server-${process.pid}.log`);
   const log = await open(logPath, 'a');
   const standalone = (() => { try { return createRequire(import.meta.url)('node:sea').isSea(); } catch { return false; } })();
   const serverPath = standalone ? undefined : fileURLToPath(new URL('./server.js', import.meta.url));
@@ -55,7 +55,7 @@ async function main() {
       const response = await fetch(`http://127.0.0.1:${port}/api/diff`, { signal: AbortSignal.timeout(250) });
       if (response.ok) {
         const data = await response.json() as { app?: string; root?: string; session?: string | null };
-        if (data.app === 'rex-pierre-diffs' && data.root === root && data.session === (session ?? null)) {
+        if (data.app === 'local-diff' && data.root === root && data.session === (session ?? null)) {
           info = { root, port };
           break;
         }
@@ -67,7 +67,7 @@ async function main() {
       PORT: String(port),
       ...(session ? { REX_SESSION: session } : {}),
       ...(block ? { REX_BLOCK: block } : {}),
-      ...(standalone ? { RPD_DIST_DIR: join(fileURLToPath(new URL('.', import.meta.url)), 'dist') } : {}),
+      ...(standalone ? { LOCAL_DIFF_DIST_DIR: join(fileURLToPath(new URL('.', import.meta.url)), 'dist') } : {}),
     };
     const child = spawn(standalone ? process.argv[1]! : process.execPath, standalone ? ['--internal-server'] : [serverPath!], {
       cwd: root,
@@ -78,11 +78,11 @@ async function main() {
     child.unref();
     let startupError: Error | undefined;
     child.once('error', error => { startupError = error; });
-    if (child.pid) await unlink(join(tmpdir(), `rex-pierre-diffs-${child.pid}.json`)).catch(() => {});
+    if (child.pid) await unlink(join(tmpdir(), `local-diff-${child.pid}.json`)).catch(() => {});
 
     for (let i = 0; i < 100 && child.pid; i++) {
       try {
-        const childInfoPath = join(tmpdir(), `rex-pierre-diffs-${child.pid}.json`);
+        const childInfoPath = join(tmpdir(), `local-diff-${child.pid}.json`);
         info = JSON.parse(await readFile(childInfoPath, 'utf8')) as { root: string; port: number };
         await unlink(childInfoPath);
         break;
@@ -96,7 +96,7 @@ async function main() {
   await log.close();
   if (!info) {
     const output = await readFile(logPath, 'utf8').catch(() => '(no server output)');
-    throw new Error(`rex-pierre-diffs server did not become ready on ports 4179–4199. Log: ${logPath}\n${output.slice(-4000)}`);
+    throw new Error(`local-diff server did not become ready on ports 4179–4199. Log: ${logPath}\n${output.slice(-4000)}`);
   }
 
   const args = ['open', `http://127.0.0.1:${info.port}`, `--split=${options.split}`, '--ratio', '50', '--focus=false'];
