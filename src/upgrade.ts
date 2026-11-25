@@ -3,10 +3,14 @@ import { accessSync, constants, existsSync, readFileSync, realpathSync } from 'n
 import { delimiter, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+declare const LOCAL_DIFF_VERSION: string;
+export const standaloneVersion = typeof LOCAL_DIFF_VERSION === 'undefined' ? undefined : LOCAL_DIFF_VERSION;
+
 const name = 'local-diff';
 const manual = 'Upgrade manually with npm install -g local-diff@latest or pnpm add -g local-diff@latest, using the manager that installed Local Diff.';
 export const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export function installedVersion(root = packageRoot): string {
+  if (standaloneVersion !== undefined) return standaloneVersion;
   const metadata = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
   if (metadata.name !== name || typeof metadata.version !== 'string') throw new Error('Cannot read Local Diff package metadata. Standalone upgrades are unsupported.');
   compareVersions(metadata.version, metadata.version);

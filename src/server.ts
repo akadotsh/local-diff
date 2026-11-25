@@ -9,6 +9,7 @@ import { dirname, extname, isAbsolute, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Readable } from 'node:stream';
 import { watch } from 'chokidar';
+import { standaloneVersion } from './upgrade.js';
 import type { SpawnSyncReturns } from 'node:child_process';
 
 type CommandResult = { status: number | null; stdout: string; stderr: string; error?: Error };
@@ -158,7 +159,7 @@ function agentPanes(session: string, rexCommand: (args: string[]) => CommandResu
 }
 
 export function createApp(root: string, token: string, reviewsPath = reviewFile(root), clients = new Set<ReviewClient>(), rexCommand = (args: string[]) => command('rex', args)) {
-  const dist = process.env.LOCAL_DIFF_DIST_DIR ? resolve(process.env.LOCAL_DIFF_DIST_DIR) : resolve(dirname(fileURLToPath(import.meta.url)), '../dist');
+  const dist = process.env.LOCAL_DIFF_DIST_DIR ? resolve(process.env.LOCAL_DIFF_DIST_DIR) : standaloneVersion !== undefined ? resolve(dirname(process.execPath), 'dist') : resolve(dirname(fileURLToPath(import.meta.url)), '../dist');
   let listing: ReturnType<typeof repositoryFiles> | undefined;
   const handler = async (req: Request) => {
     const url = new URL(req.url);

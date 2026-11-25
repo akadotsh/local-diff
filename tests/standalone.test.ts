@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { spawn, spawnSync } from 'node:child_process';
-import { access, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { access, cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -14,7 +14,10 @@ test('standalone SEA runs without Node on PATH and serves packaged frontend and 
   const sandbox = await mkdtemp(join(tmpdir(), 'local-diff-standalone-'));
   const pathDir = join(sandbox, 'bin');
   const root = join(sandbox, 'repo');
+  await cp(resolve('dist-standalone'), join(sandbox, 'installed'), { recursive: true });
+  const executable = join(pathDir, 'local-diff');
   await mkdir(pathDir);
+  await symlink(join(sandbox, 'installed/local-diff'), executable);
   await mkdir(root);
   const gitPath = spawnSync('which', ['git'], { encoding: 'utf8' }).stdout.trim();
   assert.ok(gitPath, 'Git is available for the standalone server');
@@ -24,6 +27,12 @@ test('standalone SEA runs without Node on PATH and serves packaged frontend and 
   let serverOutput = '';
   let infoPath = '';
   try {
+    const version = spawnSync(executable, ['--version'], { cwd: sandbox, encoding: 'utf8', env });
+    assert.equal(version.status, 0, version.stderr);
+    assert.equal(version.stdout.trim(), JSON.parse(await readFile(resolve('package.json'), 'utf8')).version);
+    const upgrade = spawnSync(executable, ['upgrade'], { encoding: 'utf8', env });
+    assert.equal(upgrade.status, 1);
+    assert.match(upgrade.stderr, /rerun: curl/);
     const help = spawnSync(executable, ['--help'], { encoding: 'utf8', env });
     assert.equal(help.status, 0, help.stderr);
     assert.match(help.stdout, /Usage: local-diff/);

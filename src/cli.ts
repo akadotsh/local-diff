@@ -3,17 +3,18 @@ import { spawn, spawnSync } from 'node:child_process';
 import { open, readFile, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { parseCliArgs } from './shared/cliArgs.js';
 import { startServer } from './server.js';
-import { installedVersion, upgrade } from './upgrade.js';
+import { installedVersion, standaloneVersion, upgrade } from './upgrade.js';
 
 async function main() {
+  const standalone = standaloneVersion !== undefined;
   const commandArgs = process.argv.slice(2);
   if (commandArgs[0] === '--version' && commandArgs.length === 1) { console.log(installedVersion()); return; }
   if (commandArgs[0] === 'upgrade') {
+    if (standalone) throw new Error('To upgrade this standalone installation, rerun: curl -fsSL https://raw.githubusercontent.com/akadotsh/local-diff/main/install.sh | sh');
     if (commandArgs.length > 2 || (commandArgs[1] !== undefined && commandArgs[1] !== '--check')) throw new Error('Usage: local-diff upgrade [--check]');
     await upgrade(commandArgs[1] === '--check');
     return;
@@ -47,7 +48,6 @@ async function main() {
 
   const logPath = join(tmpdir(), `local-diff-server-${process.pid}.log`);
   const log = await open(logPath, 'a');
-  const standalone = (() => { try { return createRequire(import.meta.url)('node:sea').isSea(); } catch { return false; } })();
   const serverPath = standalone ? undefined : fileURLToPath(new URL('./server.js', import.meta.url));
   let info: { root: string; port: number } | undefined;
   for (let port = 4179; port < 4200; port++) {
@@ -67,9 +67,9 @@ async function main() {
       PORT: String(port),
       ...(session ? { REX_SESSION: session } : {}),
       ...(block ? { REX_BLOCK: block } : {}),
-      ...(standalone ? { LOCAL_DIFF_DIST_DIR: join(fileURLToPath(new URL('.', import.meta.url)), 'dist') } : {}),
+      ...(standalone ? { LOCAL_DIFF_DIST_DIR: join(process.execPath, '..', 'dist') } : {}),
     };
-    const child = spawn(standalone ? process.argv[1]! : process.execPath, standalone ? ['--internal-server'] : [serverPath!], {
+    const child = spawn(process.execPath, standalone ? ['--internal-server'] : [serverPath!], {
       cwd: root,
       detached: true,
       stdio: ['ignore', log.fd, log.fd],
