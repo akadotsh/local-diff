@@ -18,6 +18,8 @@ cd /path/to/your/repository
 local-diff
 ```
 
-The build bundles the TypeScript CLI, server, and `chokidar` into one Node Single Executable Application script. SEA does not load package imports from disk by default, so bundling includes the runtime dependencies. Vite's HTML, JavaScript, CSS, and other assets remain beside the executable. The binary is ad-hoc signed for local use; public distribution needs a signing and notarization decision.
+The build bundles the TypeScript CLI, server, and `chokidar` into one Node Single Executable Application script. SEA does not load package imports from disk by default, so bundling includes the runtime dependencies. Vite's HTML, JavaScript, CSS, and other assets remain beside the executable. Release binaries are ad-hoc signed and are not notarized.
+
+Stable GitHub releases build and test this distribution on macOS ARM64, then attach `local-diff-darwin-arm64.tar.gz` and its `.sha256` checksum. The root `install.sh` verifies and installs that archive without Node.js or npm.
 
 Node's older SEA flow uses `--experimental-sea-config` and a binary injection tool such as `postject` when `--build-sea` is unavailable but SEA is enabled. A directory carrying a private Node runtime is another self-contained option.

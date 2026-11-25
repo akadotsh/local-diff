@@ -15,6 +15,28 @@ A graphical Git diff viewer for [Rex Terminal](https://www.superlogical.com/rex)
 - Ask an agent about selected code in a chosen Rex pane. Choose an agent pane and click **Ask Agent** to insert the selected code and your question; the app does not press Enter for you.
 - Use a right-side or top/bottom split, with comfortable and compact display density.
 
+## Install with curl (Apple Silicon macOS)
+
+Requires macOS 14 or newer, Git, Rex Terminal, and [rexweb](https://github.com/acoyfellow/rexweb) on PATH. Run `rexweb doctor` first. Node.js and npm are not required.
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/akadotsh/local-diff/main/install.sh | sh
+local-diff
+```
+
+The installer downloads the latest stable GitHub release, verifies its archive against the release's SHA-256 checksum, and installs `~/.local/bin/local-diff`. It prints PATH instructions if needed. Only Apple Silicon macOS standalone releases are currently available. You can also download and inspect `install.sh` before running it.
+
+To upgrade, rerun the same curl command. `local-diff upgrade` is for npm/pnpm installations. Failed downloads or checksum verification leave the installed executable unchanged. Previous standalone bundles are retained so running viewers can continue.
+
+To uninstall the curl installation:
+
+```sh
+rm -f "$HOME/.local/bin/local-diff"
+rm -rf "$HOME/.local/share/local-diff"
+```
+
+For the optional Rex shortcut below, copy `local-diff.lua` from the directory returned by `dirname "$(readlink "$HOME/.local/bin/local-diff")"`.
+
 ## Install from npm or pnpm
 
 You need macOS 14 or newer, Node.js 20 or newer, Git, Rex Terminal, and [`rexweb`](https://github.com/acoyfellow/rexweb). Follow rexweb's installation instructions first, ensure `rexweb` is on your PATH, and run `rexweb doctor` to check the setup. Then install this package globally with npm or pnpm:
@@ -99,7 +121,7 @@ If you installed with pnpm, use `$(pnpm root -g)` in place of `$(npm root -g)`. 
 require("local-diff")
 ```
 
-Then run `rex config check` and `rex config reload`. The shortcut and split direction can be changed at the top of the copied Lua file. If Rex cannot find `local-diff` from the action, set `local-diff_command` there to the absolute path returned by `command -v local-diff`.
+Then run `rex config check` and `rex config reload`. The shortcut and split direction can be changed at the top of the copied Lua file. If Rex cannot find `local-diff` from the action, replace the command there with the absolute path returned by `command -v local-diff`.
 
 ## Development
 
