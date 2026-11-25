@@ -1,11 +1,19 @@
 # ![Logo](docs/logo-small.png) Local Diff
 
-A graphical Git diff viewer for [Rex Terminal](https://www.superlogical.com/rex), powered by [Pierre Diffs](https://diffs.com/docs). Review changes, select lines, and send code context to a coding agent without leaving your terminal.
+A graphical Git diff viewer for your terminal, powered by [Pierre Diffs](https://diffs.com/docs). Review changes, select lines, and send code context to a coding agent without leaving your terminal.
 
 > [!NOTE]
-> This is an independent, community-maintained project and is not an official part of Rex.
+> Terminal support is expanding. The current release integrates with [Rex Terminal](https://www.superlogical.com/rex) on macOS; support for other terminals is in development. This is an independent, community-maintained project.
 
 ![Local Diff showing a real Git diff beside a terminal](https://raw.githubusercontent.com/akadotsh/local-diff/main/docs/screenshot.png)
+
+## Terminal support
+
+Local Diff shares one React interface and Pierre diff renderer across terminal hosts. The current Rex integration uses [RexWeb](https://github.com/acoyfellow/rexweb) to display that interface in a native WebKit view. Rex-specific commands handle pane layout, agent discovery, and inserting context into an agent pane; they do not require a separate diff renderer.
+
+The `pixel-poc` branch explores displaying the same interface through Pixel's Chromium host in other terminals. It is an isolated experiment, not part of the current installer or CLI. Before integrating it, we need to update its checkout paths for this repository, resolve clipboard acceptance, and test interactions across terminals. Supporting another viewer host also needs a plan for terminal-specific pane and agent features.
+
+Support for additional terminals is in development. The installation and usage instructions below describe the currently available Rex integration.
 
 ## Features
 
