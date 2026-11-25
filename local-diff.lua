@@ -3,14 +3,14 @@ local shortcut = "shift+cmd+g"
 local split_direction = "right"
 
 rex.action{
-  name = "open_pierre_diffs",
-  title = "Open Rex Pierre Diffs",
+  name = "open_local_diff",
+  title = "Open Local Diff",
   description = "Review Git changes beside the active terminal pane.",
   category = "Code Review",
   keywords = "git diff review",
   run = function(ctx)
     if not ctx.session_id or not ctx.block_id then
-      error("Open Rex Pierre Diffs from an active Rex terminal pane", 0)
+      error("Open Local Diff from an active Rex terminal pane", 0)
     end
 
     local terminal = "com.superlogical.terminal"
@@ -27,15 +27,15 @@ rex.action{
     end
 
     local result, run_error = rex.exec(
-      { "rpd", "--cwd", cwd, "--session", ctx.session_id, "--block", ctx.block_id, "--split", split_direction },
+      { "local-diff", "--cwd", cwd, "--session", ctx.session_id, "--block", ctx.block_id, "--split", split_direction },
       { cwd = cwd, timeout = 25 }
     )
-    if not result then error(run_error or "Could not start rpd; check that rex-pierre-diffs is installed", 0) end
+    if not result then error(run_error or "Could not start local-diff; check that local-diff is installed", 0) end
     if not result.ok then
-      error(result.stderr ~= "" and result.stderr or ("rpd exited with code " .. result.code), 0)
+      error(result.stderr ~= "" and result.stderr or ("local-diff exited with code " .. result.code), 0)
     end
     return result.stdout
   end,
 }
 
-rex.bind(shortcut, "open_pierre_diffs")
+rex.bind(shortcut, "open_local_diff")

@@ -1,5 +1,5 @@
 import { build } from 'esbuild';
-import { chmod, cp, mkdir, rm, symlink, writeFile } from 'node:fs/promises';
+import { chmod, cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -21,14 +21,15 @@ await mkdir(temp, { recursive: true });
 await mkdir(output, { recursive: true });
 await cp(resolve(root, 'dist'), resolve(output, 'dist'), { recursive: true });
 const main = resolve(temp, 'main.mjs');
-await build({ entryPoints: [resolve(root, 'src/cli.ts')], bundle: true, platform: 'node', target: 'node26', format: 'esm', outfile: main });
+const version = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8')).version;
+await build({ define: { LOCAL_DIFF_VERSION: JSON.stringify(version) }, entryPoints: [resolve(root, 'src/cli.ts')], bundle: true, platform: 'node', target: 'node26', format: 'esm', outfile: main });
 
 const config = resolve(temp, 'sea-config.json');
 await writeFile(config, JSON.stringify({
   main,
   mainFormat: 'module',
   executable: process.execPath,
-  output: resolve(output, 'rpd'),
+  output: resolve(output, 'local-diff'),
   disableExperimentalSEAWarning: true,
   useCodeCache: false,
 }, null, 2));
@@ -41,9 +42,8 @@ if (result.status !== 0) {
   throw new Error(`Node SEA build failed with exit ${result.status}`);
 }
 
-const signature = spawnSync('codesign', ['--sign', '-', resolve(output, 'rpd')], { stdio: 'inherit' });
+const signature = spawnSync('codesign', ['--sign', '-', resolve(output, 'local-diff')], { stdio: 'inherit' });
 if (signature.error) throw signature.error;
 if (signature.status !== 0) throw new Error(`Ad-hoc signing failed with exit ${signature.status}`);
-await chmod(resolve(output, 'rpd'), 0o755);
-await symlink('rpd', resolve(output, 'rex-pierre-diffs'));
+await chmod(resolve(output, 'local-diff'), 0o755);
 console.log(`Standalone distribution created at ${output}`);

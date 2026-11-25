@@ -1,4 +1,4 @@
-name: Publish to npm
+name: Release
 
 on:
   release:
@@ -9,6 +9,35 @@ permissions:
   id-token: write
 
 jobs:
+  standalone:
+    if: github.event.release.prerelease == false
+    runs-on: macos-15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          architecture: arm64
+      - run: npm ci
+      - name: Verify release version
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: node -e 'if (process.env.RELEASE_TAG !== `v${require("./package.json").version}`) process.exit(1)'
+      - run: npm run check
+      - run: npm run test:standalone
+      - name: Package standalone release
+        run: |
+          cp local-diff.lua LICENSE dist-standalone/
+          cp -R THIRD_PARTY_NOTICES dist-standalone/
+          tar -czf local-diff-darwin-arm64.tar.gz -C dist-standalone local-diff dist local-diff.lua LICENSE THIRD_PARTY_NOTICES
+          shasum -a 256 local-diff-darwin-arm64.tar.gz > local-diff-darwin-arm64.tar.gz.sha256
+      - name: Publish standalone assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$RELEASE_TAG" local-diff-darwin-arm64.tar.gz local-diff-darwin-arm64.tar.gz.sha256 --clobber
   publish:
     runs-on: ubuntu-latest
     steps:
@@ -27,7 +56,7 @@ jobs:
         id: version
         run: |
           version=$(node -p 'require("./package.json").version')
-          if npm view "rex-pierre-diffs@$version" version >/dev/null 2>&1; then
+          if npm view "local-diff@$version" version >/dev/null 2>&1; then
             echo "published=true" >> "$GITHUB_OUTPUT"
           else
             echo "published=false" >> "$GITHUB_OUTPUT"

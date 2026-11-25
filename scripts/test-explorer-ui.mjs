@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { startServer } from '../dist-node/server.js';
 
 const run = promisify(execFile);
-const root = await mkdtemp(join(tmpdir(), 'rpd-explorer-ui-'));
+const root = await mkdtemp(join(tmpdir(), 'local-diff-explorer-ui-'));
 let pane;
 let server;
 const evaluate = async code => JSON.parse((await run('rexweb', ['eval', '-b', pane, code])).stdout);

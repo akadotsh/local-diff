@@ -16,12 +16,12 @@ test('semantic version precedence and validation', () => {
 });
 
 test('global ownership uses real package and executable paths', t => {
-  const dir = mkdtempSync(join(tmpdir(), 'rpd-upgrade-'));
+  const dir = mkdtempSync(join(tmpdir(), 'local-diff-upgrade-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
-  const root = join(dir, 'node_modules/rex-pierre-diffs'), bin = join(dir, 'bin'), cli = join(root, 'dist-node/cli.js');
+  const root = join(dir, 'node_modules/local-diff'), bin = join(dir, 'bin'), cli = join(root, 'dist-node/cli.js');
   mkdirSync(join(root, 'dist-node'), { recursive: true }); mkdirSync(bin);
-  writeFileSync(cli, ''); symlinkSync(cli, join(bin, 'rpd'));
-  const paths = [join(bin, 'rpd')];
+  writeFileSync(cli, ''); symlinkSync(cli, join(bin, 'local-diff'));
+  const paths = [join(bin, 'local-diff')];
   const managerRun = (owner: string) => (command: string, args: string[]) => {
     if (command !== owner) throw new Error('missing');
     return args[0] === 'root' ? join(dir, 'node_modules') : args[0] === 'prefix' ? dir : bin;
@@ -33,7 +33,7 @@ test('global ownership uses real package and executable paths', t => {
   assert.throws(() => detectInstallation(root, cli, [...paths, other], managerRun('npm')), /conflicting/);
   assert.throws(() => detectInstallation(root, other, paths, managerRun('npm')), /Unsupported/);
   unlinkSync(paths[0]);
-  writeFileSync(paths[0], '#!/bin/sh\nexec node "$basedir/../node_modules/rex-pierre-diffs/dist-node/cli.js" "$@"\n');
+  writeFileSync(paths[0], '#!/bin/sh\nexec node "$basedir/../node_modules/local-diff/dist-node/cli.js" "$@"\n');
   assert.equal(detectInstallation(root, cli, paths, managerRun('pnpm')), 'pnpm');
   mkdirSync(join(root, '.git'));
   assert.throws(() => detectInstallation(root, cli, paths, managerRun('npm')), /development/);
@@ -41,8 +41,8 @@ test('global ownership uses real package and executable paths', t => {
 
 test('registry failures, invalid responses, and stable release', async () => {
   const request = (response: Response) => (async () => response) as typeof fetch;
-  assert.equal(await latestVersion(request(Response.json({ name: 'rex-pierre-diffs', version: '1.2.3' }))), '1.2.3');
-  for (const response of [new Response('', { status: 503 }), new Response('invalid'), Response.json({ version: '1.2.3' }), Response.json({ name: 'rex-pierre-diffs', version: '1.2.3-beta' })]) await assert.rejects(latestVersion(request(response)), /Cannot check npm/);
+  assert.equal(await latestVersion(request(Response.json({ name: 'local-diff', version: '1.2.3' }))), '1.2.3');
+  for (const response of [new Response('', { status: 503 }), new Response('invalid'), Response.json({ version: '1.2.3' }), Response.json({ name: 'local-diff', version: '1.2.3-beta' })]) await assert.rejects(latestVersion(request(response)), /Cannot check npm/);
   await assert.rejects(latestVersion(async () => { throw new Error('offline'); }), /offline/);
 });
 
@@ -59,7 +59,7 @@ test('check, up-to-date, upgrades, failures, and verification never install real
   assert.equal(calls.length, 0); assert.match(logs.join('\n'), /already up to date/);
   for (const manager of ['npm', 'pnpm'] as const) {
     await upgrade(false, { ...deps, detect: () => manager });
-    assert.deepEqual(calls.at(-1), [manager, [manager === 'npm' ? 'install' : 'add', '-g', 'rex-pierre-diffs@latest']]);
+    assert.deepEqual(calls.at(-1), [manager, [manager === 'npm' ? 'install' : 'add', '-g', 'local-diff@latest']]);
   }
   assert.match(logs.at(-1)!, /Successfully upgraded to v2.0.0/);
   await assert.rejects(upgrade(false, { ...deps, execute: () => { throw new Error('permission denied'); } }), /permission denied/);
@@ -67,7 +67,7 @@ test('check, up-to-date, upgrades, failures, and verification never install real
   await assert.rejects(upgrade(false, { ...deps, verify: () => '1.0.0' }), /verification failed.*still v1/);
   assert.ok(!logs.some(log => log.includes('Successfully')));
   await assert.rejects(upgrade(false, { ...deps, verify: () => { throw new Error('PATH conflict'); } }), /verification failed.*PATH conflict/);
-  assert.throws(() => run('rpd-nonexistent-test-command', []), /on PATH/);
+  assert.throws(() => run('local-diff-nonexistent-test-command', []), /on PATH/);
 });
 
 test('production version and upgrade argument routing work outside Git', () => {
@@ -75,5 +75,5 @@ test('production version and upgrade argument routing work outside Git', () => {
   assert.equal(result.status, 0, result.stderr);
   assert.equal(result.stdout.trim(), installedVersion(resolve('.')));
   const invalid = spawnSync(process.execPath, [resolve('dist-node/cli.js'), 'upgrade', '--bad'], { cwd: tmpdir(), encoding: 'utf8' });
-  assert.equal(invalid.status, 1); assert.match(invalid.stderr, /Usage: rpd upgrade/);
+  assert.equal(invalid.status, 1); assert.match(invalid.stderr, /Usage: local-diff upgrade/);
 });

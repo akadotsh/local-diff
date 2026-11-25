@@ -3,12 +3,16 @@ import { accessSync, constants, existsSync, readFileSync, realpathSync } from 'n
 import { delimiter, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const name = 'rex-pierre-diffs';
-const manual = 'Upgrade manually with npm install -g rex-pierre-diffs@latest or pnpm add -g rex-pierre-diffs@latest, using the manager that installed RPD.';
+declare const LOCAL_DIFF_VERSION: string;
+export const standaloneVersion = typeof LOCAL_DIFF_VERSION === 'undefined' ? undefined : LOCAL_DIFF_VERSION;
+
+const name = 'local-diff';
+const manual = 'Upgrade manually with npm install -g local-diff@latest or pnpm add -g local-diff@latest, using the manager that installed Local Diff.';
 export const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export function installedVersion(root = packageRoot): string {
+  if (standaloneVersion !== undefined) return standaloneVersion;
   const metadata = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
-  if (metadata.name !== name || typeof metadata.version !== 'string') throw new Error('Cannot read RPD package metadata. Standalone upgrades are unsupported.');
+  if (metadata.name !== name || typeof metadata.version !== 'string') throw new Error('Cannot read Local Diff package metadata. Standalone upgrades are unsupported.');
   compareVersions(metadata.version, metadata.version);
   return metadata.version;
 }
@@ -54,8 +58,8 @@ function pointsToPackage(path: string, target: string): boolean {
 
 export function pathExecutables(path = process.env.PATH ?? ''): string[] {
   const paths: string[] = [];
-  for (const dir of path.split(delimiter)) for (const bin of ['rpd', name]) {
-    const candidate = resolve(dir || '.', bin);
+  for (const dir of path.split(delimiter)) {
+    const candidate = resolve(dir || '.', name);
     try { accessSync(candidate, constants.X_OK); paths.push(candidate); } catch {}
   }
   return paths;
@@ -65,7 +69,7 @@ type Manager = 'npm' | 'pnpm';
 export function detectInstallation(root: string, executable: string, paths: string[], execute = run): Manager {
   const target = real(executable);
   if (!target || target !== real(join(root, 'dist-node/cli.js')) || existsSync(join(root, '.git')) || root.split(/[\\/]/).includes('_npx')) throw new Error(`Unsupported development, npx, or standalone installation. ${manual}`);
-  if (!paths.length || paths.some(path => !pointsToPackage(path, target))) throw new Error(`Multiple or conflicting RPD executables on PATH, or the active installation is not on PATH. Remove conflicting installations first. ${manual}`);
+  if (!paths.length || paths.some(path => !pointsToPackage(path, target))) throw new Error(`Multiple or conflicting Local Diff executables on PATH, or the active installation is not on PATH. Remove conflicting installations first. ${manual}`);
   const owners: Manager[] = [];
   for (const manager of ['npm', 'pnpm'] as const) {
     try {
@@ -107,10 +111,10 @@ export async function upgrade(check: boolean, deps = {
   deps.log('Checking for updates...');
   const current = deps.current(), latest = await deps.latest();
   deps.log(`Current version: ${current}\nLatest version:  ${latest}`);
-  if (compareVersions(current, latest) >= 0) { deps.log('RPD is already up to date.'); return; }
-  if (check) { deps.log('Update available.\nRun `rpd upgrade` to install.'); return; }
+  if (compareVersions(current, latest) >= 0) { deps.log('Local Diff is already up to date.'); return; }
+  if (check) { deps.log('Update available.\nRun `local-diff upgrade` to install.'); return; }
   const manager = deps.detect();
-  deps.log(`Upgrading RPD using ${manager}...`);
+  deps.log(`Upgrading Local Diff using ${manager}...`);
   deps.execute(manager, manager === 'npm' ? ['install', '-g', `${name}@latest`] : ['add', '-g', `${name}@latest`]);
   try {
     const version = deps.verify();

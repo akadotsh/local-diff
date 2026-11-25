@@ -21,7 +21,7 @@ export function parseCliArgs(argv: string[], currentDirectory: string): CliOptio
         options.cwd = resolve(path);
       } else if (arg === '--session') options.session = value;
       else options.block = value;
-    } else throw new Error(`Unknown option: ${arg}. Run rex-pierre-diffs --help.`);
+    } else throw new Error(`Unknown option: ${arg}. Run local-diff --help.`);
   }
   return options;
 }
