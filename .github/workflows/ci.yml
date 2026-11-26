@@ -19,7 +19,11 @@ jobs:
       - run: npm run build
       - run: npm test
       - if: matrix.node-version == 22
-        run: npm ci --prefix hosts/pixel --ignore-scripts
+        run: |
+          npm ci --prefix hosts/pixel --ignore-scripts
+          node hosts/pixel/node_modules/@zenbu-labs/pixel/scripts/postinstall.mjs
+        env:
+          PIXEL_SKIP_DOWNLOAD: '1'
       - if: matrix.node-version == 22
         run: npm run build --prefix hosts/pixel && npm test --prefix hosts/pixel
   standalone:
