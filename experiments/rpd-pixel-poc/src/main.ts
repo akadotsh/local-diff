@@ -33,8 +33,6 @@ const root = createRoot({
   },
   onResize(size) {
     log("host-resize", size);
-    // Pixel follows terminal font changes; keep browser UI zoom independent.
-    page?.webContents.setZoomFactor(viewerZoom);
     if (process.env.RPD_PIXEL_LOG && page) {
       const at = performance.now();
       void page.webContents.executeJavaScript(`new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve({width:innerWidth,height:innerHeight}))))`)
@@ -45,7 +43,8 @@ const root = createRoot({
   onFocus(focused) { log("focus", focused); },
   onVisible(visible) { log("visible", visible); },
 });
-page = root.loadURL(url, { persist: false, onOpenWindow: "deny" });
+// Clear the old bitmap on resize so it cannot stretch into the new viewport.
+page = root.loadURL(url, { persist: false, keepFrame: false, onOpenWindow: "deny" });
 root.setTitle("RPD Pixel POC");
 page.webContents.on("will-navigate", (event, next) => {
   const destination = new URL(next);
