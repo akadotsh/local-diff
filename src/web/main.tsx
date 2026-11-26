@@ -272,18 +272,6 @@ function App() {
           <option value="comfortable">Comfortable</option>
           <option value="compact">Compact</option>
         </select>
-        <button
-          className={`popout-button ${stylex.props(styles.popoutButton).className}`}
-          title="Open review in a separate window"
-          aria-label="Open review in a separate window"
-          onClick={() => window.open(window.location.href, "_blank", "popup,width=1440,height=900,noopener,noreferrer")}
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M14 3h7v7" />
-            <path d="M10 14 21 3" />
-            <path d="M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6" />
-          </svg>
-        </button>
       </header>
       <main
         ref={layoutRef}

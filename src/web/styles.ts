@@ -31,16 +31,6 @@ export const styles = stylex.create({
     },
     whiteSpace: "nowrap"
   },
-  popoutButton: {
-    display: "grid",
-    placeItems: "center",
-    flex: "none",
-    width: "30px",
-    minHeight: "30px",
-    padding: "5px",
-    background: "transparent",
-    color: "var(--muted)"
-  },
   mobileTabs: {
     display: {
       default: "none",
