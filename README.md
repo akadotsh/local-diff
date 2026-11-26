@@ -11,7 +11,7 @@ A graphical Git diff viewer for your terminal, powered by [Pierre Diffs](https:/
 
 Local Diff shares one React interface and Pierre diff renderer across terminal hosts. The current Rex integration uses [RexWeb](https://github.com/acoyfellow/rexweb) to display that interface in a native WebKit view. Rex-specific commands handle pane layout, agent discovery, and inserting context into an agent pane; they do not require a separate diff renderer.
 
-The `pixel-poc` branch explores displaying the same interface through Pixel's Chromium host in other terminals. It is an isolated experiment, not part of the current installer or CLI. Before integrating it, we need to update its checkout paths for this repository, resolve clipboard acceptance, and test interactions across terminals. Supporting another viewer host also needs a plan for terminal-specific pane and agent features.
+The [Pixel viewer](hosts/pixel/README.md) displays the same interface through Chromium. Run it from a source checkout in a Pixel-supported terminal. The curl installer and `local-diff` CLI continue to use RexWeb.
 
 Support for additional terminals is in development. The installation and usage instructions below describe the currently available Rex integration.
 
