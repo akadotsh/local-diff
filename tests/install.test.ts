@@ -16,7 +16,7 @@ test('curl installer installs, upgrades, verifies checksums and preserves instal
   script('uname', 'case "$1" in -s) echo "${TEST_OS:-Darwin}";; -m) echo "${TEST_ARCH:-arm64}";; esac');
   script('sw_vers', 'echo "${TEST_MACOS:-14.0}"');
   script('curl', 'while [ "$#" -gt 0 ]; do case "$1" in https://*) url=$1;; -o) shift; output=$1;; esac; shift; done\n[ "${TEST_DOWNLOAD_FAIL:-}" != yes ] || exit 22\ncase "$url" in https://github.com/akadotsh/local-diff/releases/latest/download/*) cp "$TEST_RELEASE/${url##*/}" "$output";; *) exit 1;; esac');
-  for (const tool of ['cp', 'cut', 'tar', 'shasum', 'mkdir', 'mktemp', 'rm', 'mv', 'ln', 'chmod']) {
+  for (const tool of ['cp', 'cut', 'tar', 'gzip', 'shasum', 'mkdir', 'mktemp', 'rm', 'mv', 'ln', 'chmod']) {
     const found = spawnSync('which', [tool], { encoding: 'utf8' }).stdout.trim();
     assert.ok(found, tool); symlinkSync(found, join(bin, tool));
   }
