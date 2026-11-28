@@ -10,7 +10,7 @@ test('curl installer installs, upgrades, verifies checksums and preserves instal
   const dir = mkdtempSync(join(tmpdir(), 'local-diff-install-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const bin = join(dir, 'tools'), home = join(dir, 'home with spaces'), release = join(dir, 'release');
-  for (const path of [bin, home, release, join(release, 'dist'), join(release, 'THIRD_PARTY_NOTICES')]) mkdirSync(path, { recursive: true });
+  for (const path of [bin, home, release, join(release, 'dist'), join(release, 'THIRD_PARTY_NOTICES'), join(release, 'hosts/pixel/dist'), join(release, 'node_modules/@zenbu-labs/pixel/dist')]) mkdirSync(path, { recursive: true });
   const script = (name: string, body: string) => { writeFileSync(join(bin, name), `#!/bin/sh\n${body}\n`, { mode: 0o755 }); };
   // Exercise the same POSIX script on CI without needing a real GitHub release.
   script('uname', 'case "$1" in -s) echo "${TEST_OS:-Darwin}";; -m) echo "${TEST_ARCH:-arm64}";; esac');
@@ -25,11 +25,14 @@ test('curl installer installs, upgrades, verifies checksums and preserves instal
   else writeFileSync(join(release, 'local-diff'), '#!/bin/sh\necho fixture-v1\n', { mode: 0o755 });
   chmodSync(join(release, 'local-diff'), 0o755);
   writeFileSync(join(release, 'dist/index.html'), '<html>fixture</html>');
+  writeFileSync(join(release, 'hosts/pixel/dist/main.js'), '// fixture');
+  writeFileSync(join(release, 'node_modules/@zenbu-labs/pixel/dist/bin.js'), '// fixture');
+  writeFileSync(join(release, 'package.json'), '{}');
   writeFileSync(join(release, 'local-diff.lua'), '-- fixture');
   writeFileSync(join(release, 'LICENSE'), 'fixture');
   const asset = 'local-diff-darwin-arm64.tar.gz', archive = join(dir, asset);
   const pack = () => {
-    const result = spawnSync('tar', ['-czf', archive, '-C', release, 'local-diff', 'dist', 'local-diff.lua', 'LICENSE', 'THIRD_PARTY_NOTICES']);
+    const result = spawnSync('tar', ['-czf', archive, '-C', release, 'local-diff', 'dist', 'hosts', 'node_modules', 'package.json', 'local-diff.lua', 'LICENSE', 'THIRD_PARTY_NOTICES']);
     assert.equal(result.status, 0);
     writeFileSync(`${archive}.sha256`, `${createHash('sha256').update(readFileSync(archive)).digest('hex')}  ${asset}\n`);
   };

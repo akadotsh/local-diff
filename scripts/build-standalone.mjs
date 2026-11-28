@@ -20,6 +20,12 @@ await rm(output, { recursive: true, force: true });
 await mkdir(temp, { recursive: true });
 await mkdir(output, { recursive: true });
 await cp(resolve(root, 'dist'), resolve(output, 'dist'), { recursive: true });
+await cp(resolve(root, 'hosts/pixel/dist'), resolve(output, 'hosts/pixel/dist'), { recursive: true });
+for (const file of ['package.json', 'package-lock.json']) await cp(resolve(root, 'hosts/pixel', file), resolve(output, file));
+const runtime = spawnSync('npm', ['ci', '--omit=dev', '--no-audit', '--no-fund'], { cwd: output, stdio: 'inherit' });
+if (runtime.error) throw runtime.error;
+if (runtime.status !== 0) throw new Error(`Pixel runtime installation failed with exit ${runtime.status}`);
+
 const main = resolve(temp, 'main.mjs');
 const version = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8')).version;
 await build({ define: { LOCAL_DIFF_VERSION: JSON.stringify(version) }, entryPoints: [resolve(root, 'src/cli.ts')], bundle: true, platform: 'node', target: 'node26', format: 'esm', outfile: main });

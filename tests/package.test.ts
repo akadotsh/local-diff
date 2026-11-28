@@ -14,5 +14,6 @@ test('publishes the local-diff command', async () => {
   assert.equal(manifest.scripts.prepublishOnly, 'npm run check && npm test');
   assert.ok(manifest.files.includes('dist-node'));
   assert.ok(manifest.files.includes('dist'));
+  assert.ok(manifest.files.includes('hosts/pixel/dist'));
   assert.ok(manifest.files.includes('local-diff.lua'));
 });

@@ -21,6 +21,8 @@ jobs:
           node-version: 26
           architecture: arm64
       - run: npm ci
+        env:
+          PIXEL_SKIP_DOWNLOAD: '1'
       - name: Verify release version
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
@@ -31,7 +33,7 @@ jobs:
         run: |
           cp local-diff.lua LICENSE dist-standalone/
           cp -R THIRD_PARTY_NOTICES dist-standalone/
-          tar -czf local-diff-darwin-arm64.tar.gz -C dist-standalone local-diff dist local-diff.lua LICENSE THIRD_PARTY_NOTICES
+          tar -czf local-diff-darwin-arm64.tar.gz -C dist-standalone local-diff dist hosts node_modules package.json local-diff.lua LICENSE THIRD_PARTY_NOTICES
           shasum -a 256 local-diff-darwin-arm64.tar.gz > local-diff-darwin-arm64.tar.gz.sha256
       - name: Publish standalone assets
         env:
@@ -48,6 +50,8 @@ jobs:
           registry-url: https://registry.npmjs.org
       - run: npm install --global npm@^11.5.1
       - run: npm ci
+        env:
+          PIXEL_SKIP_DOWNLOAD: '1'
       - name: Verify release version
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}

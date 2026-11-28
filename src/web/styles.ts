@@ -401,7 +401,17 @@ export const styles = stylex.create({
     display: "flex",
     flexDirection: "column",
     minWidth: "0",
+    overflow: "hidden"
+  },
+  codeScroll: {
+    flex: "1",
+    minHeight: "0",
     overflow: "auto"
+  },
+  codeScrollContent: {
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "100%"
   },
   reviewNotes: {
     padding: "9px 18px",
@@ -613,7 +623,7 @@ export const styles = stylex.create({
   },
   sourceContent: {
     minWidth: "0",
-    overflow: "auto",
+    overflow: "hidden",
     display: "flex",
     flexDirection: "column"
   },

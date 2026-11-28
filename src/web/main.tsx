@@ -9,8 +9,9 @@ import React, {
   useState,
 } from "react";
 import { createRoot } from "react-dom/client";
-import { PatchDiff } from "@pierre/diffs/react";
-import { parsePatchFiles, type DiffLineAnnotation } from "@pierre/diffs";
+import { PatchDiff, Virtualizer } from "@pierre/diffs/react";
+import { activeArticle } from "./activeArticle";
+import { DEFAULT_VIRTUAL_FILE_METRICS, parsePatchFiles, type DiffLineAnnotation } from "@pierre/diffs";
 import {
   reviewMessage,
   selectionContext,
@@ -206,6 +207,11 @@ function App() {
     enableLineSelection: true,
     onLineSelectionEnd: (range: DiffSelection | null) => choose(range, patch),
   })), [files, choose, effectiveTheme]);
+  const diffMetrics = useMemo(() => ({
+    ...DEFAULT_VIRTUAL_FILE_METRICS,
+    hunkLineCount: 25,
+    lineHeight: density === "comfortable" ? 22 : 19,
+  }), [density]);
   async function send() {
     if (!selection || !targets.some(t => t.id === target)) return;
     setStatus("Sending…");
@@ -389,17 +395,16 @@ function App() {
           hidden={sidebarMode !== "changes"}
           className={`diff-content ${stylex.props(styles.diffContent).className}`}
           aria-label="Diff viewer"
-          onScroll={(e) => {
-            const articles = e.currentTarget.querySelectorAll("article");
-            const top = e.currentTarget.getBoundingClientRect().top + 40;
-            let current = articles[0];
-            for (const article of articles) {
-              if (article.getBoundingClientRect().top > top) break;
-              current = article;
-            }
+          onScrollCapture={(e) => {
+            if (!(e.target instanceof HTMLElement) || !e.target.classList.contains("code-scroll")) return;
+            const current = activeArticle(
+              e.currentTarget.querySelectorAll<HTMLElement>("article[data-file]"),
+              e.currentTarget.getBoundingClientRect().top + 40,
+            );
             if (current) setActiveFile(current.dataset.file);
           }}
         >
+          <Virtualizer className={`code-scroll ${stylex.props(styles.codeScroll).className}`} contentClassName={stylex.props(styles.codeScrollContent).className}>
           <details className={`review-notes ${stylex.props(styles.reviewNotes).className}`}>
             <summary>Review notes ({comments.length})</summary>
             {comments.map((c) => (
@@ -426,6 +431,8 @@ function App() {
                   </button>
                 ) : (
                   <PatchDiff
+                    // Row metrics are read only when the renderer mounts.
+                    key={density}
                     patch={f}
                     selectedLines={
                       selection?.patch === f ? selection.range : null
@@ -526,11 +533,11 @@ function App() {
                       {
                         "--diffs-font-size":
                           density === "comfortable" ? "14px" : "12px",
-                        "--diffs-line-height":
-                          density === "comfortable" ? "22px" : "19px",
+                        "--diffs-line-height": `${diffMetrics.lineHeight}px`,
                       } as React.CSSProperties
                     }
                     options={diffOptions[i]}
+                    metrics={diffMetrics}
                   />
                 )}
               </article>
@@ -561,6 +568,7 @@ function App() {
               )}
             </div>
           )}
+          </Virtualizer>
         </section>
         {explorerOpened && explorerHost && <Explorer sidebar={explorerHost} token={token} active={sidebarMode === "explorer"} theme={effectiveTheme} onSelect={() => setMobileView("diff")} />}
       </main>

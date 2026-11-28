@@ -44,7 +44,7 @@ try {
   const opened = await run('rexweb', ['open', url, '--tab', '--focus=false', '--json'], { env });
   pane = JSON.parse(opened.stdout).id;
   await wait('document.querySelector("article diffs-container")?.shadowRoot?.querySelector("[data-line]") != null');
-  await evaluate('window.originalDiff = document.querySelector("article diffs-container"); window.originalPage = performance.timeOrigin; document.querySelector(".diff-content").scrollTop = 10; return true');
+  await evaluate('window.originalDiff = document.querySelector("article diffs-container"); window.originalPage = performance.timeOrigin; document.querySelector(".diff-content .code-scroll").scrollTop = 10; return true');
   await evaluate('const el = document.querySelector("article diffs-container").shadowRoot.querySelector("[data-gutter] [data-line-type=change-addition]"); el.dispatchEvent(new PointerEvent("pointerdown", {bubbles:true,composed:true,pointerType:"mouse",pointerId:1,button:0})); document.dispatchEvent(new PointerEvent("pointerup", {bubbles:true,composed:true,pointerType:"mouse",pointerId:1,button:0})); return true');
   await wait('document.querySelector(".inline-composer") != null');
   await evaluate('const input = document.querySelector(".inline-composer textarea"); const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value").set; setter.call(input, "Review question"); input.dispatchEvent(new Event("input", {bubbles:true})); return true');

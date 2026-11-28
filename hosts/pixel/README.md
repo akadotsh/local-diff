@@ -1,6 +1,6 @@
 # Pixel viewer
 
-Display Local Diff inside your terminal using Pixel's Chromium WebView. The viewer uses the same backend and diff interface as the RexWeb host.
+Display Local Diff inside your terminal using Pixel's Chromium WebView. Pixel is the default host for the root dev command, local preview, and `local-diff` CLI.
 
 Requires Node.js 22 or newer, Git, and a Pixel-supported terminal. Tested on macOS ARM64 in Rex. Pixel installs its own Electron runtime.
 
@@ -8,15 +8,12 @@ From the repository root:
 
 ```sh
 npm ci
-npm run build
-cd hosts/pixel
-npm ci
-npm run build
-npm test
-npm run dev -- /absolute/path/to/repository
+npm run dev
 ```
 
-The launcher starts a backend on an available port and closes it when the viewer exits. Inside Rex it opens a split beside the invoking pane; elsewhere it runs in the current terminal. There is no hot reload. Omit the repository argument to review this checkout.
+This builds the viewer, starts this checkout’s backend and Vite, and enables frontend hot reload. Inside Rex it opens a split beside the invoking pane; elsewhere it runs in the current terminal. Ctrl+Q in Pixel or Ctrl+C in the launcher stops the preview. Use `npm run local` for a production build.
+
+The isolated host can still be built and run from `hosts/pixel` with `npm ci`, `npm run build`, and `npm run dev -- /absolute/path/to/repository`, after building the root project. That launcher has no hot reload. Omit the repository argument to review this checkout.
 
 To connect to an existing Local Diff server:
 

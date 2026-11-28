@@ -35,8 +35,8 @@ expected=$(cut -d ' ' -f 1 "$work/$asset.sha256")
 actual=$(shasum -a 256 "$work/$asset")
 [ "${actual%% *}" = "$expected" ] || fail 'SHA-256 verification failed; installation unchanged.'
 mkdir "$work/bundle"
-tar -xzf "$work/$asset" -C "$work/bundle" local-diff dist local-diff.lua LICENSE THIRD_PARTY_NOTICES || fail 'Invalid release archive.'
-[ -f "$work/bundle/local-diff" ] && [ ! -L "$work/bundle/local-diff" ] && [ -f "$work/bundle/dist/index.html" ] || fail 'Release files are missing.'
+tar -xzf "$work/$asset" -C "$work/bundle" local-diff dist hosts node_modules package.json local-diff.lua LICENSE THIRD_PARTY_NOTICES || fail 'Invalid release archive.'
+[ -f "$work/bundle/local-diff" ] && [ ! -L "$work/bundle/local-diff" ] && [ -f "$work/bundle/dist/index.html" ] && [ -f "$work/bundle/hosts/pixel/dist/main.js" ] && [ -f "$work/bundle/node_modules/@zenbu-labs/pixel/dist/bin.js" ] || fail 'Release files are missing.'
 chmod 755 "$work/bundle/local-diff"
 "$work/bundle/local-diff" --version || fail 'Downloaded executable cannot run on this system.'
 [ ! -d "$bin/local-diff" ] || fail "$bin/local-diff is a directory."
@@ -45,7 +45,7 @@ bundle=$(mktemp -d "$store/release.XXXXXX")
 mv "$work/bundle/"* "$bundle/"
 ln -s "$bundle/local-diff" "$work/local-diff"
 mv -f "$work/local-diff" "$bin/local-diff"
-printf 'Installed %s\nRun local-diff inside a Git repository in Rex. Git, Rex and rexweb must be on PATH.\n' "$bin/local-diff"
+printf 'Installed %s\nRun local-diff inside a Git repository in Rex. Git and Rex must be on PATH; the Pixel runtime is included.\n' "$bin/local-diff"
 case ":${PATH:-}:" in
   *:"$bin":*) ;;
   *) printf 'Add this to your shell profile, then open a new terminal:\n  export PATH="$HOME/.local/bin:$PATH"\n' ;;

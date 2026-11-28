@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { parseCliArgs } from './shared/cliArgs.js';
 import { startServer } from './server.js';
+import { pixelCommand, runPixelCLI } from './pixel.js';
 import { installedVersion, standaloneVersion, upgrade } from './upgrade.js';
 
 async function main() {
@@ -21,30 +22,25 @@ async function main() {
   }
   const options = parseCliArgs(process.argv.slice(2), process.cwd());
   if (options.help) {
-    console.log('local-diff — review local Git changes inside Rex\n\nUsage: local-diff [--split right|left|above|below] [--cwd PATH] [--session ID] [--block ID]\n\nOther commands: local-diff upgrade [--check], local-diff --version\n\nRun inside a Git repository in a Rex terminal. Requires macOS 14 or newer, Git, Rex, and rexweb. Requires Node.js only for npm installations.');
+    console.log('local-diff — review local Git changes inside Rex\n\nUsage: local-diff [--split right|left|above|below] [--cwd PATH] [--session ID] [--block ID]\n\nOther commands: local-diff upgrade [--check], local-diff --version\n\nRun inside a Git repository in a Rex terminal. Requires Git, Rex, and a Pixel-supported terminal. Requires Node.js 22 or newer for npm installations.');
     return;
   }
 
   const cwd = options.cwd;
   let session = options.session || process.env.REX_SESSION || undefined;
-  let block = options.block;
+  let block = options.block || process.env.REX_BLOCK || undefined;
   const repoResult = spawnSync('git', ['rev-parse', '--show-toplevel'], { cwd, encoding: 'utf8' });
   if (repoResult.error || repoResult.status !== 0) throw new Error(`Run inside a Git repository: ${repoResult.stderr?.trim() || repoResult.error?.message || 'git failed'}`);
   const root = repoResult.stdout.trim();
 
-  for (const [binary, args] of [['rex', ['whoami', '--json']], ['rexweb', ['--version']]] as const) {
-    const check = spawnSync(binary, args, { encoding: 'utf8' });
-    if (check.error || check.status !== 0) throw new Error(`Required command ${binary} is unavailable: ${check.stderr?.trim() || check.error?.message || `exit ${check.status}`}`);
-    if (binary === 'rex') {
-      try {
-        const whoami = JSON.parse(check.stdout) as { session_id?: string; block_id?: string };
-        if (whoami.session_id && whoami.block_id) {
-          session = options.session || whoami.session_id;
-          block = options.block || whoami.block_id;
-        }
-      } catch {}
-    }
-  }
+  const check = spawnSync('rex', ['whoami', '--json'], { encoding: 'utf8' });
+  if (check.error || check.status !== 0) throw new Error(`Required command rex is unavailable: ${check.stderr?.trim() || check.error?.message || `exit ${check.status}`}`);
+  try {
+    const whoami = JSON.parse(check.stdout) as { session_id?: string; block_id?: string };
+    session = options.session || whoami.session_id || session;
+    block = options.block || whoami.block_id || block;
+  } catch {}
+  session ||= block;
 
   const logPath = join(tmpdir(), `local-diff-server-${process.pid}.log`);
   const log = await open(logPath, 'a');
@@ -99,15 +95,14 @@ async function main() {
     throw new Error(`local-diff server did not become ready on ports 4179–4199. Log: ${logPath}\n${output.slice(-4000)}`);
   }
 
-  const args = ['open', `http://127.0.0.1:${info.port}`, `--split=${options.split}`, '--ratio', '50', '--focus=false'];
+  const [command, ...viewerArgs] = pixelCommand(`http://127.0.0.1:${info.port}`);
+  const args = ['run', `--split=${options.split}`, '--ratio', '50', '--focus=false', '--label', 'Local Diff', '-c', root];
   if (session) args.push('--session', session);
   if (block) args.push('--block', block);
-  const result = spawnSync('rexweb', args, {
-    encoding: 'utf8',
-  });
+  const result = spawnSync('rex', [...args, '--', command, ...viewerArgs], { encoding: 'utf8' });
   if (result.error || result.status !== 0) {
     const output = [result.stderr, result.stdout].filter(Boolean).join('\n').trim();
-    throw new Error(`RexWeb failed to open the viewer (exit ${result.status}). Run rexweb doctor; the server remains running at http://127.0.0.1:${info.port}. Log: ${logPath}${output ? `\n${output}` : ''}${result.error ? `\n${result.error.message}` : ''}`);
+    throw new Error(`Pixel failed to open the viewer (exit ${result.status}). The server remains running at http://127.0.0.1:${info.port}. Log: ${logPath}${output ? `\n${output}` : ''}${result.error ? `\n${result.error.message}` : ''}`);
   }
 }
 
@@ -117,4 +112,5 @@ const reportError = (error: unknown) => {
 };
 
 if (process.argv[2] === '--internal-server') void startServer().catch(reportError);
+else if (process.argv[2] === '--internal-pixel' && standaloneVersion !== undefined) runPixelCLI();
 else void main().catch(reportError);

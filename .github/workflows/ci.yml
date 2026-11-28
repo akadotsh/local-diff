@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20, 22]
+        node-version: [22, 26]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -15,17 +15,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
       - run: npm ci
+        env:
+          PIXEL_SKIP_DOWNLOAD: '1'
       - run: npm run check
       - run: npm run build
       - run: npm test
-      - if: matrix.node-version == 22
-        run: |
-          npm ci --prefix hosts/pixel --ignore-scripts
-          node hosts/pixel/node_modules/@zenbu-labs/pixel/scripts/postinstall.mjs
-        env:
-          PIXEL_SKIP_DOWNLOAD: '1'
-      - if: matrix.node-version == 22
-        run: npm run build --prefix hosts/pixel && npm test --prefix hosts/pixel
   standalone:
     runs-on: macos-15
     steps:

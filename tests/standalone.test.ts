@@ -37,6 +37,9 @@ test('standalone SEA runs without Node on PATH and serves packaged frontend and 
     assert.equal(help.status, 0, help.stderr);
     assert.match(help.stdout, /Usage: local-diff/);
     assert.equal((spawnSync('node', ['--version'], { env }).error as NodeJS.ErrnoException | undefined)?.code, 'ENOENT');
+    const pixelHelp = spawnSync(executable, ['--internal-pixel', '--help'], { encoding: 'utf8', env });
+    assert.equal(pixelHelp.status, 0, pixelHelp.stderr);
+    assert.match(pixelHelp.stdout, /usage: pixel/);
     const invalid = spawnSync(executable, ['--split', 'diagonal'], { cwd: root, encoding: 'utf8', env });
     assert.equal(invalid.status, 1);
     assert.match(invalid.stderr, /must be right, left, above, or below/);
