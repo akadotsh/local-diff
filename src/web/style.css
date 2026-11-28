@@ -70,8 +70,7 @@ svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width:
 .app-identity svg { width: 23px; height: 23px; color: var(--text-secondary); }
 .app-identity b { font-size: 13px; font-weight: 600; letter-spacing: -.2px; }
 .app-header select { flex-shrink: 0; font-size: 12px; background-color: var(--hover); }
-.popout-button svg { width: 16px; height: 16px; }
-main { --sidebar-width: clamp(200px, var(--sidebar-preferred-width, 248px), min(520px, 50vw)); position: relative; display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); flex: 1; min-height: 0; }
+main { --sidebar-width: clamp(200px, var(--sidebar-preferred-width, 248px), 520px); position: relative; display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); flex: 1; min-height: 0; }
 aside { display: flex; flex-direction: column; min-width: 0; padding: 12px; overflow: auto; background: var(--surface); border-right: 1px solid var(--border); }
 .sidebar-heading h3 { display: flex; align-items: center; gap: 8px; flex: 1; margin: 0; font-size: 12px; font-weight: 600; }
 aside input[type="search"] { width: 100%; min-width: 0; flex: none; min-height: 32px; padding: 6px 9px; margin-bottom: 12px; font-size: 12px; background: var(--surface-inset); }
